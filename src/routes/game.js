@@ -1,31 +1,63 @@
 import express from "express"
-import JsonDB from "simple-json-db"
+import { createPlayer } from "../game/player.js"
+import fs from "fs"
+import path from "path"
+import { fileURLToPath } from "url"
 
 const router = express.Router()
 
-const users = new JsonDB("./data/users.json")
-const universe = new JsonDB("./data/universe.json")
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-function auth(req,res,next){
+const universe = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "../data/universe.json"))
+)
 
-    if(!req.session.user)
-        return res.status(401).json({error:"Unauthorized"})
+router.get("/start", (req,res)=>{
 
-    next()
-}
+    if(!req.session.player){
+        req.session.player = createPlayer()
+    }
 
-router.get("/player",auth,(req,res)=>{
+    res.json(req.session.player)
+})
 
-    const player = users.get(req.session.user)
+router.get("/universe",(req,res)=>{
+    res.json(universe)
+})
+
+router.post("/travel",(req,res)=>{
+
+    const {system} = req.body
+    const player = req.session.player
+
+    const current = universe[player.system]
+
+    const neighbor = current.neighbors.find(n => n.id === system)
+
+    if(!neighbor)
+        return res.status(400).json({error:"System unreachable"})
+
+    const fuelCost = neighbor.distance * 10
+
+    if(player.fuel < fuelCost)
+        return res.status(400).json({error:"Not enough fuel"})
+
+    player.fuel -= fuelCost
+    player.system = system
+    player.location = null
 
     res.json(player)
 })
 
-router.get("/system/:id",auth,(req,res)=>{
+router.post("/dock",(req,res)=>{
 
-    const system = universe.get(req.params.id)
+    const {station} = req.body
+    const player = req.session.player
 
-    res.json(system)
+    player.location = station
+
+    res.json({success:true})
 })
 
 export default router

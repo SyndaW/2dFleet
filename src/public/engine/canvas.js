@@ -6,6 +6,6 @@ canvas.height = window.innerHeight
 
 export function clear(){
 
-    ctx.fillStyle = "black"
+    ctx.fillStyle = "#fdf6e3"
     ctx.fillRect(0,0,canvas.width,canvas.height)
 }
