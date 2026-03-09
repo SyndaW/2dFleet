@@ -1,0 +1,34 @@
+{
+  "sol": {
+    "name": "Sol",
+    "stations": [
+      {
+        "id": "sol_station",
+        "name": "Sol Prime Station"
+      }
+    ],
+    "planets": [
+      "Earth",
+      "Mars"
+    ],
+    "neighbors": [
+      {
+        "id": "alpha_centauri",
+        "distance": 4.2
+      }
+    ]
+  },
+
+  "alpha_centauri": {
+    "name": "Alpha Centauri",
+    "stations": [
+      {
+        "id": "ac_station",
+        "name": "Centauri Trade Hub"
+      }
+    ],
+    "planets": [
+      "Proxima b"
+    ]
+  }
+}
