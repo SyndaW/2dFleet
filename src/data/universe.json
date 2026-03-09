@@ -29,6 +29,12 @@
     ],
     "planets": [
       "Proxima b"
+    ],
+    "neighbors": [
+      {
+        "id": "sol",
+        "distance": 4.2
+      }
     ]
   }
 }
