@@ -27,6 +27,7 @@ async function loadUniverse() {
 
 export async function renderMap() {
   await loadUniverse();
+  STATE.selectedSystem = STATE.player.system;
 
   ctx.fillStyle = "#ffffff";
 

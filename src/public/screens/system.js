@@ -47,17 +47,22 @@ export function renderSystem() {
 
   // Docking key
   if (keys["d"]) {
-    STATE.player.x = 100;
-    STATE.player.y = 300;
-    STATE.player.vx = 0;
-    STATE.player.vy = 0;
+  const systemId = STATE.selectedSystem || STATE.player.system;
 
-    STATE.docking.targetX = 600;
-    STATE.docking.targetY = 300;
-    STATE.docking.startTime = Date.now();
+  STATE.player.system = systemId;
+  STATE.selectedSystem = systemId;
 
-    STATE.screen = "landing";
-  }
+  STATE.player.x = 100;
+  STATE.player.y = 300;
+  STATE.player.vx = 0;
+  STATE.player.vy = 0;
+
+  STATE.docking.targetX = 600;
+  STATE.docking.targetY = 300;
+  STATE.docking.startTime = Date.now();
+
+  STATE.screen = "landing";
+}
 
   if (keys["m"]) {
     STATE.screen = "map";

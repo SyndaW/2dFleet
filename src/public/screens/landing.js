@@ -4,6 +4,10 @@ import { keys } from "../engine/input.js";
 
 let finished = false;
 
+function resetDocking() {
+  finished = false;
+}
+
 export function renderLanding() {
   const p = STATE.player;
   const dock = STATE.docking;
@@ -44,30 +48,33 @@ export function renderLanding() {
   const elapsed = (Date.now() - dock.startTime) / 1000;
 
   if (elapsed > 15) {
-    finished = true;
-    STATE.screen = "system";
-    return;
-  }
+  resetDocking();
+  STATE.screen = "system";
+  return;
+}
 
   if (aligned && slow) {
-    finished = true;
+  finished = true;
 
-    const system = STATE.universe[STATE.player.system];
+  const systemId = STATE.player.system;
+  const system = STATE.universe[systemId];
 
-    if (system && system.stations.length > 0) {
-      STATE.player.location = system.stations[0].id;
-    }
-
-    setTimeout(() => {
-      STATE.screen = "shop";
-      finished = false;
-    }, 300);
-
-    return;
+  if (system && system.stations.length > 0) {
+    STATE.player.location = system.stations[0].id;
   }
+
+  STATE.selectedSystem = systemId;
+
+  setTimeout(() => {
+    resetDocking();
+    STATE.screen = "shop";
+  }, 300);
+
+  return;
+}
 
   if (!aligned && speed > 2) {
-    finished = true;
-    STATE.screen = "system";
-  }
+  resetDocking();
+  STATE.screen = "system";
+}
 }
