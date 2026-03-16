@@ -11,16 +11,16 @@ async function loadUniverse() {
 
     STATE.universe = await res.json();
 
-    let x = 300;
+    STATE.systems = [];
 
     for (const id in STATE.universe) {
+      const star = STATE.universe[id];
+
       STATE.systems.push({
         id,
-        x,
-        y: 300,
+        x: star.x,
+        y: star.y,
       });
-
-      x += 350;
     }
   }
 }
@@ -81,6 +81,7 @@ export async function renderMap() {
 
   if (consumeKey("Enter")) {
     STATE.selectedSystem = selected.id;
+    STATE.player.system = selected.id;
     STATE.screen = "system";
   }
 }

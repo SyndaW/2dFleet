@@ -18,7 +18,11 @@ export async function renderShop() {
     return;
   }
 
-  await loadPrices();
+  async function loadPrices() {
+    if (!prices) {
+      prices = await getPrices();
+    }
+  }
 
   const goods = Object.keys(prices);
 

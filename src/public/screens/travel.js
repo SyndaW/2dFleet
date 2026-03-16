@@ -19,6 +19,7 @@ export function renderTravel() {
 
     total = neighbor.distance * 1000;
     distance = total;
+    velocity = 2;
 
     const fuelCost = neighbor.distance * 10;
 
@@ -32,11 +33,9 @@ export function renderTravel() {
   }
 
   velocity *= 1.02;
-  velocity += 0.5;
-
   distance -= velocity;
 
-  ctx.fillStyle = "white";
+  const progress = 1 - distance / total;
 
   panel(40, 40, 420, 200, "Hyperspace");
 
@@ -46,20 +45,15 @@ export function renderTravel() {
 
   progressBar(60, 180, 350, 14, progress);
 
-  const progress = 1 - distance / total;
-
-  ctx.fillStyle = "#333";
-  ctx.fillRect(50, 150, 400, 20);
-
-  ctx.fillStyle = "#4dabf7";
-  ctx.fillRect(50, 150, 400 * progress, 20);
-
   if (distance <= 0) {
     STATE.player.system = STATE.destination;
+    STATE.selectedSystem = STATE.destination;
+
     STATE.destination = null;
 
-    velocity = 0;
     distance = 0;
+    velocity = 0;
+    total = 0;
 
     STATE.screen = "system";
   }

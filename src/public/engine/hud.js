@@ -14,7 +14,7 @@ export function renderHUD() {
 
   label("Fuel", 560, 12);
 
-  progressBar(560, 30, 150, 12, STATE.fuel / 100, "#06d6a0");
+  progressBar(560, 30, 150, 12, STATE.fuel / STATE.player.maxFuel, "#06d6a0");
 
   if (STATE.destination) {
     label(`Destination: ${STATE.destination}`, 740, 20, "#4dabf7");

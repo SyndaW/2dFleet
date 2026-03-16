@@ -4,7 +4,7 @@ import { keys } from "../engine/input.js";
 import { panel, label } from "../engine/ui.js";
 
 export function renderSystem() {
-  const system = STATE.universe[STATE.selectedSystem];
+  const system = STATE.universe[STATE.selectedSystem || STATE.player.system];
 
   ctx.fillStyle = "#586e75";
   panel(30, 30, 260, 120, "System");
