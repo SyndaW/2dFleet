@@ -50,16 +50,15 @@ export async function renderMap() {
     ctx.fillText(star.name, star.x - 20, star.y + 25);
   });
 
-  if (consumeKey("ArrowRight"))
+  if (STATE.systems.length === 0) return;
+
+if (consumeKey("ArrowRight"))
   index = Math.min(index + 1, STATE.systems.length - 1);
 
 if (consumeKey("ArrowLeft"))
   index = Math.max(index - 1, 0);
 
 if (index >= STATE.systems.length) index = 0;
-
-
-  if (STATE.systems.length === 0) return;
 
 const selected = STATE.systems[index];
 
