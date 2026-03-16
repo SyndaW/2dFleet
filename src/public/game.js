@@ -24,6 +24,18 @@ async function init() {
   STATE.screen = "map";
 }
 
+window.openMap = () => {
+  STATE.screen = "map";
+};
+
+window.openTravel = () => {
+  STATE.screen = "travel";
+};
+
+window.openShop = () => {
+  STATE.screen = "shop";
+};
+
 function loop() {
   clear();
 

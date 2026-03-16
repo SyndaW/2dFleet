@@ -1,35 +1,43 @@
 {
   "sol": {
     "name": "Sol",
-    "stations": [
-      {
-        "id": "sol_station",
-        "name": "Sol Prime Station"
-      }
-    ],
+    "x": 200,
+    "y": 300,
+    "stations": [{ "id": "sol_station", "name": "Sol Prime Station" }],
     "planets": ["Earth", "Mars"],
     "neighbors": [
-      {
-        "id": "alpha_centauri",
-        "distance": 4.2
-      }
+      { "id": "alpha_centauri", "distance": 4.2 },
+      { "id": "barnards_star", "distance": 6.0 }
     ]
   },
 
   "alpha_centauri": {
     "name": "Alpha Centauri",
-    "stations": [
-      {
-        "id": "ac_station",
-        "name": "Centauri Trade Hub"
-      }
-    ],
+    "x": 600,
+    "y": 200,
+    "stations": [{ "id": "ac_station", "name": "Centauri Trade Hub" }],
     "planets": ["Proxima b"],
     "neighbors": [
-      {
-        "id": "sol",
-        "distance": 4.2
-      }
+      { "id": "sol", "distance": 4.2 },
+      { "id": "sirius", "distance": 8.6 }
     ]
+  },
+
+  "barnards_star": {
+    "name": "Barnard's Star",
+    "x": 400,
+    "y": 500,
+    "stations": [{ "id": "barnard_station", "name": "Barnard Mining Port" }],
+    "planets": ["Barnard b"],
+    "neighbors": [{ "id": "sol", "distance": 6.0 }]
+  },
+
+  "sirius": {
+    "name": "Sirius",
+    "x": 900,
+    "y": 250,
+    "stations": [{ "id": "sirius_station", "name": "Sirius High Dock" }],
+    "planets": ["Sirius I", "Sirius II"],
+    "neighbors": [{ "id": "alpha_centauri", "distance": 8.6 }]
   }
 }

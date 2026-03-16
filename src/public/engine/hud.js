@@ -14,4 +14,9 @@ export function renderHUD() {
   const cargoCount = Object.values(STATE.cargo).reduce((a, b) => a + b, 0);
 
   ctx.fillText("Cargo: " + cargoCount + " / 20", 350, 25);
+
+  ctx.fillText("System: " + STATE.player.system, 520, 25);
+
+  if (STATE.destination)
+    ctx.fillText("Destination: " + STATE.destination, 700, 25);
 }

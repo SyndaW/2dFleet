@@ -34,17 +34,17 @@ export async function renderMap() {
   ctx.fillText("T: Jump", 50, 110);
   ctx.fillText("ENTER: View System", 50, 140);
 
-  STATE.systems.forEach((sys, i) => {
+  STATE.systems.forEach((sys) => {
     const star = STATE.universe[sys.id];
 
-    ctx.fillStyle = i === index ? "#ff5555" : "#ffaa00";
+    ctx.fillStyle = "#ffaa00";
 
     ctx.beginPath();
-    ctx.arc(sys.x, sys.y, 20, 0, Math.PI * 2);
+    ctx.arc(star.x, star.y, 12, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText(star.name, sys.x - 40, sys.y + 40);
+    ctx.fillStyle = "#fff";
+    ctx.fillText(star.name, star.x - 20, star.y + 25);
   });
 
   if (consumeKey("ArrowRight"))
@@ -57,13 +57,20 @@ export async function renderMap() {
   STATE.selectedSystem = selected.id;
 
   const system = STATE.universe[selected.id];
-  const current = STATE.universe["sol"];
+  const current = STATE.universe[STATE.player.system];
 
   const neighbor = current.neighbors.find((n) => n.id === selected.id);
 
   if (neighbor) {
     ctx.fillText("Distance: " + neighbor.distance + " LY", 50, 180);
   }
+
+  const playerSystem = STATE.universe[STATE.player.system];
+
+  ctx.strokeStyle = "#4dabf7";
+  ctx.beginPath();
+  ctx.arc(playerSystem.x, playerSystem.y, 20, 0, Math.PI * 2);
+  ctx.stroke();
 
   if (consumeKey("t")) {
     STATE.destination = selected.id;

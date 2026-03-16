@@ -6,35 +6,54 @@ export function renderSystem() {
   const system = STATE.universe[STATE.selectedSystem];
 
   ctx.fillStyle = "#586e75";
-
   ctx.fillText(system.name + " System", 50, 50);
   ctx.fillText("D: Dock Station", 50, 80);
   ctx.fillText("M: Galaxy Map", 50, 110);
 
+  // Draw star at center
   ctx.fillStyle = "#b58900";
-
   ctx.beginPath();
   ctx.arc(500, 300, 30, 0, Math.PI * 2);
   ctx.fill();
 
+  // Draw orbiting planets
   system.planets.forEach((p, i) => {
+    const orbit = 100 + i * 60;
+    ctx.strokeStyle = "#444";
     ctx.beginPath();
-    ctx.arc(500, 350 + i * 40, 8, 0, Math.PI * 2);
+    ctx.arc(500, 300, orbit, 0, Math.PI * 2);
+    ctx.stroke();
+
+    const angle = Date.now() / 2000 + i;
+    const x = 500 + Math.cos(angle) * orbit;
+    const y = 300 + Math.sin(angle) * orbit;
+
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillText(p, 520, 350 + i * 40);
+    ctx.fillStyle = "#fff";
+    ctx.fillText(p, x + 10, y);
   });
 
+  // Draw stations
   system.stations.forEach((s, i) => {
     ctx.fillRect(650, 300 + i * 40, 15, 15);
     ctx.fillText(s.name, 670, 310 + i * 40);
   });
 
+  // Docking key
   if (keys["d"]) {
-    STATE.screen = "landing";
+    STATE.player.x = 100;
+    STATE.player.y = 300;
+    STATE.player.vx = 0;
+    STATE.player.vy = 0;
 
     STATE.docking.targetX = 600;
     STATE.docking.targetY = 300;
+    STATE.docking.startTime = Date.now();
+
+    STATE.screen = "landing";
   }
 
   if (keys["m"]) {

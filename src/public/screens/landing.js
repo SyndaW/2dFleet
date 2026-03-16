@@ -2,9 +2,13 @@ import { ctx } from "../engine/canvas.js";
 import { STATE } from "../engine/state.js";
 import { keys } from "../engine/input.js";
 
+let finished = false;
+
 export function renderLanding() {
   const p = STATE.player;
   const dock = STATE.docking;
+
+  if (finished) return;
 
   if (keys["ArrowUp"]) p.vy -= 0.1;
   if (keys["ArrowDown"]) p.vy += 0.1;
@@ -17,34 +21,53 @@ export function renderLanding() {
   p.vx *= 0.97;
   p.vy *= 0.97;
 
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "#fff";
   ctx.fillText("Dock With Station", 50, 60);
 
   ctx.strokeStyle = "#00ff88";
-
-  ctx.strokeRect(dock.targetX, dock.targetY, 80, 50);
+  ctx.strokeRect(dock.targetX - 20, dock.targetY - 10, 120, 70);
 
   ctx.fillStyle = "#4dabf7";
-
   ctx.fillRect(p.x, p.y, 20, 10);
+
+  const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+
+  ctx.fillStyle = "#fff";
+  ctx.fillText("Speed: " + speed.toFixed(2), 50, 100);
 
   const dx = p.x - dock.targetX;
   const dy = p.y - dock.targetY;
 
-  const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-
   const aligned = Math.abs(dx) < 30 && Math.abs(dy) < 25;
-  const slow = speed < 1;
+  const slow = speed < 0.8;
 
-  if (aligned && slow) {
-    ctx.fillStyle = "#00ff88";
-    ctx.fillText("Docking Successful!", 50, 120);
+  const elapsed = (Date.now() - dock.startTime) / 1000;
 
-    STATE.screen = "shop";
+  if (elapsed > 15) {
+    finished = true;
+    STATE.screen = "system";
+    return;
   }
 
-  if (aligned && !slow) {
-    ctx.fillStyle = "#ff5555";
-    ctx.fillText("Too Fast! Slow Down!", 50, 120);
+  if (aligned && slow) {
+    finished = true;
+
+    const system = STATE.universe[STATE.player.system];
+
+    if (system && system.stations.length > 0) {
+      STATE.player.location = system.stations[0].id;
+    }
+
+    setTimeout(() => {
+      STATE.screen = "shop";
+      finished = false;
+    }, 300);
+
+    return;
+  }
+
+  if (!aligned && speed > 2) {
+    finished = true;
+    STATE.screen = "system";
   }
 }

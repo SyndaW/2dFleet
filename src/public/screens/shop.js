@@ -1,52 +1,62 @@
 import { ctx } from "../engine/canvas.js";
 import { STATE } from "../engine/state.js";
 import { consumeKey } from "../engine/input.js";
+import { getPrices } from "../api.js";
 
-export function renderShop() {
+let prices = null;
+
+async function loadPrices() {
+  if (!prices) {
+    prices = await getPrices();
+  }
+}
+
+export async function renderShop() {
+  if (!STATE.player.location) {
+    STATE.screen = "system";
+    return;
+  }
+
+  await loadPrices();
+
+  const goods = Object.keys(prices);
+
   ctx.fillStyle = "#ffffff";
-
   ctx.fillText("STATION MARKET", 50, 50);
   ctx.fillText("Credits: " + STATE.credits, 50, 80);
 
-  ctx.fillText("Commodity", 50, 140);
-  ctx.fillText("Buy", 200, 140);
-  ctx.fillText("Sell", 260, 140);
+  goods.forEach((g, i) => {
+    ctx.fillText(i + 1 + ". " + g, 50, 150 + i * 30);
+    ctx.fillText(prices[g], 200, 150 + i * 30);
+    ctx.fillText(STATE.cargo[g] || 0, 260, 150 + i * 30);
+  });
 
-  ctx.fillText("Food", 50, 180);
-  ctx.fillText("10", 200, 180);
-  ctx.fillText("8", 260, 180);
-
-  ctx.fillText("Minerals", 50, 220);
-  ctx.fillText("40", 200, 220);
-
-  ctx.fillText("M Return to Galaxy Map", 50, 300);
+  ctx.fillText("Press M to leave station", 50, 350);
 
   function cargoCount() {
     return Object.values(STATE.cargo).reduce((a, b) => a + b, 0);
   }
 
-  if (consumeKey("1")) {
-    if (STATE.credits >= 10 && cargoCount() < 20) {
-      STATE.credits -= 10;
-      STATE.cargo.food = (STATE.cargo.food || 0) + 1;
+  goods.forEach((g, i) => {
+    if (consumeKey("" + (i + 1))) {
+      if (STATE.credits >= prices[g] && cargoCount() < STATE.cargoCapacity) {
+        STATE.credits -= prices[g];
+        STATE.cargo[g] = (STATE.cargo[g] || 0) + 1;
+      }
     }
-  }
+  });
 
-  if (consumeKey("2")) {
-    if (STATE.credits >= 40 && cargoCount() < 20) {
-      STATE.credits -= 40;
-      STATE.cargo.minerals = (STATE.cargo.minerals || 0) + 1;
-    }
-  }
-
-  if (consumeKey("3")) {
-    if ((STATE.cargo.food || 0) > 0) {
-      STATE.cargo.food--;
-      STATE.credits += 8;
-    }
+  if (consumeKey("s")) {
+    goods.forEach((g) => {
+      if ((STATE.cargo[g] || 0) > 0) {
+        STATE.cargo[g]--;
+        STATE.credits += Math.round(prices[g] * 0.8);
+      }
+    });
   }
 
   if (consumeKey("m")) {
-    STATE.screen = "map";
+    prices = null;
+    STATE.screen = "system";
   }
 }

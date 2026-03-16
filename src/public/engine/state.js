@@ -18,6 +18,7 @@ export const STATE = {
   credits: 1000,
 
   cargo: {},
+  cargoCapacity: 20,
 
   fuel: 100,
 
