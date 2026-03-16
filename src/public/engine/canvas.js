@@ -1,11 +1,18 @@
-export const canvas = document.getElementById("game")
-export const ctx = canvas.getContext("2d")
+export const canvas = document.getElementById("game");
+export const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
+ctx.font = "16px monospace";
 
-export function clear(){
+export function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
 
-    ctx.fillStyle = "#fdf6e3"
-    ctx.fillRect(0,0,canvas.width,canvas.height)
+window.addEventListener("resize", resizeCanvas);
+
+resizeCanvas();
+
+export function clear() {
+  ctx.fillStyle = "#fdf6e3";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 }

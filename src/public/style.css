@@ -1,11 +1,11 @@
-body{
-margin:0;
-background:#fdf6e3;
-color:#586e75;
-font-family:monospace;
-overflow:hidden;
+body {
+  margin: 0;
+  background: #fdf6e3;
+  color: #586e75;
+  font-family: monospace;
+  overflow: hidden;
 }
 
-canvas{
-display:block;
+canvas {
+  display: block;
 }

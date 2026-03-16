@@ -1,48 +1,15 @@
-import express from "express"
+import express from "express";
+import { getPrices } from "../services/priceService.js";
+import { requirePlayer } from "../middleware/requireSession.js";
 
-const router = express.Router()
+const router = express.Router();
 
-const basePrices = {
-    Food: 10,
-    Textiles: 20,
-    Minerals: 40,
-    Machinery: 100,
-    Technology: 250,
-    Medicine: 150
-}
+router.get("/", requirePlayer, (req, res) => {
+  const station = req.session.player.location;
 
-const stationModifiers = {
+  const prices = getPrices(station);
 
-    sol_station:{
-        Food:1.0,
-        Minerals:0.8,
-        Technology:1.2
-    },
+  res.json(prices);
+});
 
-    ac_station:{
-        Food:1.3,
-        Minerals:1.1,
-        Technology:0.7
-    }
-}
-
-router.get("/",(req,res)=>{
-
-    const player = req.session.player
-    const station = player.location
-
-    const mod = stationModifiers[station] || {}
-
-    const prices = {}
-
-    for(const item in basePrices){
-
-        const m = mod[item] || 1
-
-        prices[item] = Math.round(basePrices[item] * m)
-    }
-
-    res.json(prices)
-})
-
-export default router
+export default router;

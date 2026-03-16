@@ -1,23 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<title>2dFleet</title>
-<link rel="stylesheet" href="style.css">
-</head>
+  <head>
+    <title>2dFleet</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
+  <body>
+    <canvas id="game" width="900" height="500"></canvas>
 
-<canvas id="game" width="900" height="500"></canvas>
+    <div id="ui">
+      <button onclick="openMap()">Map</button>
+      <button onclick="openTravel()">Travel</button>
+      <button onclick="openShop()">Shop</button>
+    </div>
 
-<div id="ui">
-
-<button onclick="openMap()">Map</button>
-<button onclick="openTravel()">Travel</button>
-<button onclick="openShop()">Shop</button>
-
-</div>
-
-<script type="module" src="game.js"></script>
-
-</body>
+    <script type="module" src="ui.js"></script>
+    <script type="module" src="game.js"></script>
+  </body>
 </html>

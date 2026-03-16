@@ -1,31 +1,45 @@
-import express from "express"
-import session from "express-session"
-import path from "path"
-import { fileURLToPath } from "url"
+import express from "express";
+import session from "express-session";
+import path from "path";
+import { fileURLToPath } from "url";
 
-import gameRoutes from "./routes/game.js"
-import shopRoutes from "./routes/shop.js"
-import authRoutes from "./routes/auth.js"
+import { ENV } from "./config/env.js";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import authRoutes from "./routes/auth.js";
+import gameRoutes from "./routes/game.js";
+import shopRoutes from "./routes/shop.js";
 
-const app = express()
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-app.use(express.json())
+const app = express();
 
-app.use(session({
-    secret: "2dfleet-secret",
+app.use(express.json());
+
+app.use(
+  session({
+    secret: ENV.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true
-}))
+    saveUninitialized: false,
+    cookie: {
+      secure: ENV.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: "lax",
+    },
+  }),
+);
 
-app.use(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api/game", gameRoutes)
-app.use("/api/shop", shopRoutes)
-app.use("/api", authRoutes)
+app.use("/api/auth", authRoutes);
+app.use("/api/game", gameRoutes);
+app.use("/api/shop", shopRoutes);
 
-app.listen(3000, () => {
-    console.log("2dFleet running on http://localhost:3000")
-})
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: "Internal server error" });
+});
+
+app.listen(ENV.PORT, () => {
+  console.log(`2dFleet running on port ${ENV.PORT}`);
+});

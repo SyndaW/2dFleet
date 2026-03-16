@@ -7,10 +7,7 @@
         "name": "Sol Prime Station"
       }
     ],
-    "planets": [
-      "Earth",
-      "Mars"
-    ],
+    "planets": ["Earth", "Mars"],
     "neighbors": [
       {
         "id": "alpha_centauri",
@@ -27,9 +24,7 @@
         "name": "Centauri Trade Hub"
       }
     ],
-    "planets": [
-      "Proxima b"
-    ],
+    "planets": ["Proxima b"],
     "neighbors": [
       {
         "id": "sol",

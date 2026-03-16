@@ -1,20 +1,17 @@
-export function createPlayer(){
+export function createPlayer() {
+  return {
+    credits: 1000,
 
-    return {
+    cargo: {},
 
-        credits: 1000,
+    cargoCapacity: 20,
 
-        cargo: {},
+    system: "sol",
 
-        cargoCapacity: 20,
+    location: "sol_station",
 
-        system: "sol",
+    fuel: 100,
 
-        location: "sol_station",
-
-        fuel: 100,
-
-        maxFuel: 100
-
-    }
+    maxFuel: 100,
+  };
 }

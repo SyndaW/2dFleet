@@ -1,32 +1,30 @@
 export const STATE = {
+  screen: "map",
 
-    screen:"galaxy",
+  universe: null,
 
-    universe:null,
+  systems: [],
 
-    systems:[],
+  selectedSystem: null,
 
-    selectedSystem:null,
+  player: {
+    x: 200,
+    y: 200,
+    vx: 0,
+    vy: 0,
+    speed: 0,
+  },
 
-    player:{
-        x:200,
-        y:200,
-        vx:0,
-        vy:0,
-        speed:0
-    },
+  credits: 1000,
 
-    credits:1000,
+  cargo: {},
 
-    cargo:{},
+  fuel: 100,
 
-    fuel:100,
+  destination: null,
 
-    destination:null,
-
-    docking:{
-        targetX:500,
-        targetY:300
-    }
-
-}
+  docking: {
+    targetX: 500,
+    targetY: 300,
+  },
+};

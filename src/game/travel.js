@@ -1,24 +1,21 @@
-const MAX_SPEED = 30000000000000000
+const MAX_SPEED = 3e16;
+const ACCELERATION = 1.08;
+const LY_IN_METERS = 9.461e15;
 
-export function calculateTravel(distanceLY){
+export function calculateTravel(distanceLY) {
+  const distance = distanceLY * LY_IN_METERS;
 
-    const meters = distanceLY * 9.461e15
+  let speed = 1;
+  let traveled = 0;
+  let time = 0;
 
-    let speed = 1
-    let time = 0
-    let distance = meters
+  while (traveled < distance) {
+    speed = Math.min(speed * ACCELERATION, MAX_SPEED);
 
-    while(distance > 0){
+    traveled += speed;
 
-        speed *= 1.08
+    time++;
+  }
 
-        if(speed > MAX_SPEED)
-            speed = MAX_SPEED
-
-        distance -= speed
-
-        time++
-    }
-
-    return time
+  return time;
 }
