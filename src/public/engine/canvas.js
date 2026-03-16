@@ -1,7 +1,7 @@
 export const canvas = document.getElementById("game");
 export const ctx = canvas.getContext("2d");
 
-ctx.font = "18px monospace";
+ctx.font = "18px 'Courier New', monospace";
 ctx.textBaseline = "top";
 
 export function resizeCanvas() {
@@ -23,6 +23,6 @@ export function drawText(text, x, y, color = "#ffffff") {
 }
 
 export function clear() {
-  ctx.fillStyle = "#fdf6e3";
+  ctx.fillStyle = "#020617";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }

@@ -1,22 +1,22 @@
-import { ctx, canvas } from "./canvas.js";
 import { STATE } from "./state.js";
+import { canvas } from "./canvas.js";
+import { panel, label, progressBar } from "./ui.js";
 
 export function renderHUD() {
-  ctx.fillStyle = "#111";
-  ctx.fillRect(0, 0, canvas.width, 40);
+  panel(0, 0, canvas.width, 60);
 
-  ctx.fillStyle = "#fff";
+  label(`Credits: ${STATE.credits}`, 20, 20, "#ffd166");
 
-  ctx.fillText("Credits: " + STATE.credits, 20, 25);
-
-  ctx.fillText("Fuel: " + STATE.fuel.toFixed(2), 200, 25);
+  label(`System: ${STATE.player.system}`, 200, 20);
 
   const cargoCount = Object.values(STATE.cargo).reduce((a, b) => a + b, 0);
+  label(`Cargo: ${cargoCount} / ${STATE.cargoCapacity}`, 380, 20);
 
-  ctx.fillText("Cargo: " + cargoCount + " / 20", 350, 25);
+  label("Fuel", 560, 12);
 
-  ctx.fillText("System: " + STATE.player.system, 520, 25);
+  progressBar(560, 30, 150, 12, STATE.fuel / 100, "#06d6a0");
 
-  if (STATE.destination)
-    ctx.fillText("Destination: " + STATE.destination, 700, 25);
+  if (STATE.destination) {
+    label(`Destination: ${STATE.destination}`, 740, 20, "#4dabf7");
+  }
 }

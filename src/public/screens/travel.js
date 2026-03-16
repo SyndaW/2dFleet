@@ -1,5 +1,6 @@
 import { ctx } from "../engine/canvas.js";
 import { STATE } from "../engine/state.js";
+import { panel, label, progressBar } from "../engine/ui.js";
 
 let distance = 0;
 let velocity = 0;
@@ -37,9 +38,13 @@ export function renderTravel() {
 
   ctx.fillStyle = "white";
 
-  ctx.fillText("Traveling to " + STATE.destination, 50, 50);
-  ctx.fillText("Velocity: " + velocity.toFixed(2), 50, 80);
-  ctx.fillText("Distance: " + Math.max(0, distance).toFixed(0), 50, 110);
+  panel(40, 40, 420, 200, "Hyperspace");
+
+  label(`Destination: ${STATE.destination}`, 60, 90);
+  label(`Velocity: ${velocity.toFixed(2)}`, 60, 120);
+  label(`Distance: ${Math.max(0, distance).toFixed(0)}`, 60, 150);
+
+  progressBar(60, 180, 350, 14, progress);
 
   const progress = 1 - distance / total;
 

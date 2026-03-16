@@ -1,6 +1,7 @@
 import { ctx } from "../engine/canvas.js";
 import { STATE } from "../engine/state.js";
 import { consumeKey } from "../engine/input.js";
+import { panel, label } from "../engine/ui.js";
 
 let index = 0;
 
@@ -29,10 +30,11 @@ export async function renderMap() {
 
   ctx.fillStyle = "#ffffff";
 
-  ctx.fillText("GALAXY MAP", 50, 50);
-  ctx.fillText("Arrow Keys: Select System", 50, 80);
-  ctx.fillText("T: Jump", 50, 110);
-  ctx.fillText("ENTER: View System", 50, 140);
+  panel(30, 30, 260, 150, "GALAXY MAP");
+
+  label("← → Select System", 50, 70);
+  label("T Jump", 50, 95);
+  label("ENTER System View", 50, 120);
 
   STATE.systems.forEach((sys) => {
     const star = STATE.universe[sys.id];

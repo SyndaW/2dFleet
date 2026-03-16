@@ -20,15 +20,23 @@ canvas {
 
 #ui {
   position: fixed;
-  bottom: 10px;
-  left: 10px;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(10, 15, 28, 0.8);
+  padding: 10px;
+  border: 1px solid #4dabf7;
 }
 
 button {
-  background: #1f2a44;
+  background: #16223b;
   border: 1px solid #4dabf7;
-  color: white;
+  color: #e6edf3;
   padding: 6px 12px;
   margin-right: 5px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #4dabf7;
 }

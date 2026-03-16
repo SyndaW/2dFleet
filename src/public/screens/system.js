@@ -1,14 +1,17 @@
 import { ctx } from "../engine/canvas.js";
 import { STATE } from "../engine/state.js";
 import { keys } from "../engine/input.js";
+import { panel, label } from "../engine/ui.js";
 
 export function renderSystem() {
   const system = STATE.universe[STATE.selectedSystem];
 
   ctx.fillStyle = "#586e75";
-  ctx.fillText(system.name + " System", 50, 50);
-  ctx.fillText("D: Dock Station", 50, 80);
-  ctx.fillText("M: Galaxy Map", 50, 110);
+  panel(30, 30, 260, 120, "System");
+
+  label(system.name, 50, 70, "#4dabf7");
+  label("D Dock station", 50, 95);
+  label("M Galaxy map", 50, 120);
 
   // Draw star at center
   ctx.fillStyle = "#b58900";

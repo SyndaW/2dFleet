@@ -2,6 +2,7 @@ import { ctx } from "../engine/canvas.js";
 import { STATE } from "../engine/state.js";
 import { consumeKey } from "../engine/input.js";
 import { getPrices } from "../api.js";
+import { panel, label } from "../engine/ui.js";
 
 let prices = null;
 
@@ -22,16 +23,19 @@ export async function renderShop() {
   const goods = Object.keys(prices);
 
   ctx.fillStyle = "#ffffff";
-  ctx.fillText("STATION MARKET", 50, 50);
-  ctx.fillText("Credits: " + STATE.credits, 50, 80);
+  panel(40, 40, 360, 360, "Station Market");
+  label(`Credits: ${STATE.credits}`, 60, 80, "#ffd166");
 
   goods.forEach((g, i) => {
-    ctx.fillText(i + 1 + ". " + g, 50, 150 + i * 30);
-    ctx.fillText(prices[g], 200, 150 + i * 30);
-    ctx.fillText(STATE.cargo[g] || 0, 260, 150 + i * 30);
+    const y = 120 + i * 30;
+
+    label(`${i + 1}. ${g}`, 60, y);
+    label(`${prices[g]} cr`, 200, y, "#4dabf7");
+    label(`Cargo: ${STATE.cargo[g] || 0}`, 300, y);
   });
 
-  ctx.fillText("Press M to leave station", 50, 350);
+  label("S Sell cargo", 60, 320);
+  label("M Leave station", 60, 350);
 
   function cargoCount() {
     return Object.values(STATE.cargo).reduce((a, b) => a + b, 0);
