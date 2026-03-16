@@ -82,7 +82,6 @@ export async function renderMap() {
 
   if (consumeKey("Enter")) {
     STATE.selectedSystem = selected.id;
-    STATE.player.system = selected.id;
-    STATE.screen = "system";
+STATE.screen = "system";
   }
 }

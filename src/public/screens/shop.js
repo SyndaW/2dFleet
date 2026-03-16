@@ -5,11 +5,27 @@ import { getPrices } from "../api.js";
 import { panel, label } from "../engine/ui.js";
 
 let prices = null;
+let loading = false;
 
 async function loadPrices() {
-  if (!prices) {
-    prices = await getPrices();
+  if (prices || loading) return;
+
+  loading = true;
+
+  try {
+    const data = await getPrices();
+
+    if (data && !data.error) {
+      prices = data;
+    } else {
+      prices = {};
+    }
+  } catch (err) {
+    console.error("Price load failed:", err);
+    prices = {};
   }
+
+  loading = false;
 }
 
 export async function renderShop() {
@@ -18,16 +34,17 @@ export async function renderShop() {
     return;
   }
 
-  async function loadPrices() {
-    if (!prices) {
-      prices = await getPrices();
-    }
+  await loadPrices();
+
+  if (!prices) {
+    panel(40, 40, 360, 200, "Loading Market...");
+    return;
   }
 
   const goods = Object.keys(prices);
 
-  ctx.fillStyle = "#ffffff";
-  panel(40, 40, 360, 360, "Station Market");
+  panel(40, 40, 360, 380, "Station Market");
+
   label(`Credits: ${STATE.credits}`, 60, 80, "#ffd166");
 
   goods.forEach((g, i) => {
@@ -38,32 +55,42 @@ export async function renderShop() {
     label(`Cargo: ${STATE.cargo[g] || 0}`, 300, y);
   });
 
-  label("S Sell cargo", 60, 320);
-  label("M Leave station", 60, 350);
+  const footerY = 120 + goods.length * 30 + 20;
+
+  label("1-9 Buy goods", 60, footerY);
+  label("S Sell cargo", 60, footerY + 30);
+  label("M Leave station", 60, footerY + 60);
 
   function cargoCount() {
     return Object.values(STATE.cargo).reduce((a, b) => a + b, 0);
   }
 
+  const cargoCapacity = STATE.player.ship?.cargoCapacity ?? 20;
+
+  // BUY GOODS
   goods.forEach((g, i) => {
-    if (consumeKey("" + (i + 1))) {
-      if (STATE.credits >= prices[g] && cargoCount() < STATE.cargoCapacity) {
+    const key = (i + 1).toString();
+
+    if (consumeKey(key)) {
+      if (STATE.credits >= prices[g] && cargoCount() < cargoCapacity) {
         STATE.credits -= prices[g];
         STATE.cargo[g] = (STATE.cargo[g] || 0) + 1;
       }
     }
   });
 
-  if (consumeKey("s")) {
+  // SELL ALL
+  if (consumeKey("s") || consumeKey("S")) {
     goods.forEach((g) => {
-      if ((STATE.cargo[g] || 0) > 0) {
-        STATE.cargo[g]--;
-        STATE.credits += Math.round(prices[g] * 0.8);
-      }
-    });
+  if ((STATE.cargo[g] || 0) > 0) {
+    STATE.cargo[g]--;
+    STATE.credits += Math.round(prices[g] * 0.8);
+  }
+});
   }
 
-  if (consumeKey("m")) {
+  // EXIT STATION
+  if (consumeKey("m") || consumeKey("M")) {
     prices = null;
     STATE.screen = "system";
   }

@@ -25,6 +25,9 @@ export function renderLanding() {
   p.vx *= 0.97;
   p.vy *= 0.97;
 
+  p.vx = Math.max(-3, Math.min(3, p.vx));
+  p.vy = Math.max(-3, Math.min(3, p.vy));
+
   ctx.fillStyle = "#fff";
   ctx.fillText("Dock With Station", 50, 60);
 
@@ -48,33 +51,33 @@ export function renderLanding() {
   const elapsed = (Date.now() - dock.startTime) / 1000;
 
   if (elapsed > 15) {
-  resetDocking();
-  STATE.screen = "system";
-  return;
-}
-
-  if (aligned && slow) {
-  finished = true;
-
-  const systemId = STATE.player.system;
-  const system = STATE.universe[systemId];
-
-  if (system && system.stations.length > 0) {
-    STATE.player.location = system.stations[0].id;
+    resetDocking();
+    STATE.screen = "system";
+    return;
   }
 
-  STATE.selectedSystem = systemId;
+  if (aligned && slow) {
+    finished = true;
 
-  setTimeout(() => {
-    resetDocking();
-    STATE.screen = "shop";
-  }, 300);
+    const systemId = STATE.player.system;
+    const system = STATE.universe[systemId];
 
-  return;
-}
+    if (system && system.stations.length > 0) {
+      STATE.player.location = system.stations[0].id;
+    }
+
+    STATE.selectedSystem = systemId;
+
+    setTimeout(() => {
+      resetDocking();
+      STATE.screen = "shop";
+    }, 300);
+
+    return;
+  }
 
   if (!aligned && speed > 2) {
-  resetDocking();
-  STATE.screen = "system";
-}
+    resetDocking();
+    STATE.screen = "system";
+  }
 }

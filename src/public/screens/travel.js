@@ -6,7 +6,7 @@ let distance = 0;
 let velocity = 0;
 let total = 0;
 
-export function renderTravel() {
+export async function renderTravel() {
   const current = STATE.universe[STATE.player.system];
 
   if (distance === 0) {
@@ -46,7 +46,7 @@ export function renderTravel() {
   progressBar(60, 180, 350, 14, progress);
 
   if (distance <= 0) {
-    STATE.player.system = STATE.destination;
+    await travel(STATE.destination);
     STATE.selectedSystem = STATE.destination;
 
     STATE.destination = null;
