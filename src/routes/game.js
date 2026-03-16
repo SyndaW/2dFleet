@@ -7,6 +7,9 @@ import { requirePlayer } from "../middleware/requireSession.js";
 const router = express.Router();
 
 router.get("/start", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: "Login required" });
+  }
   if (!req.session.player) {
     req.session.player = createPlayer();
   }

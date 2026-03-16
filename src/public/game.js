@@ -16,6 +16,9 @@ async function init() {
   const res = await fetch("/api/game/start");
   const player = await res.json();
 
+  const u = await fetch("/api/game/universe");
+  STATE.universe = await u.json();
+
   STATE.credits = player.credits;
   STATE.cargo = player.cargo;
   STATE.fuel = player.fuel;

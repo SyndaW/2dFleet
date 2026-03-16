@@ -59,7 +59,8 @@ export async function renderShop() {
 
   label("1-9 Buy goods", 60, footerY);
   label("S Sell cargo", 60, footerY + 30);
-  label("M Leave station", 60, footerY + 60);
+  label("F Buy fuel (10cr)", 60, footerY + 60);
+  label("M Leave station", 60, footerY + 90);
 
   function cargoCount() {
     return Object.values(STATE.cargo).reduce((a, b) => a + b, 0);
@@ -82,11 +83,18 @@ export async function renderShop() {
   // SELL ALL
   if (consumeKey("s") || consumeKey("S")) {
     goods.forEach((g) => {
-  if ((STATE.cargo[g] || 0) > 0) {
-    STATE.cargo[g]--;
-    STATE.credits += Math.round(prices[g] * 0.8);
+      if ((STATE.cargo[g] || 0) > 0) {
+        STATE.cargo[g]--;
+        STATE.credits += Math.round(prices[g] * 0.8);
+      }
+    });
   }
-});
+
+  if (consumeKey("f") || consumeKey("F")) {
+    if (STATE.credits >= 10 && STATE.fuel < STATE.player.maxFuel) {
+      STATE.credits -= 10;
+      STATE.fuel = Math.min(STATE.player.maxFuel, STATE.fuel + 10);
+    }
   }
 
   // EXIT STATION

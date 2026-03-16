@@ -1,6 +1,7 @@
 import { ctx } from "../engine/canvas.js";
 import { STATE } from "../engine/state.js";
 import { panel, label, progressBar } from "../engine/ui.js";
+import { travel } from "../api.js";
 
 let distance = 0;
 let velocity = 0;
