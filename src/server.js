@@ -5,7 +5,6 @@ import { fileURLToPath } from "url";
 
 import { ENV } from "./config/env.js";
 
-import authRoutes from "./routes/auth.js";
 import gameRoutes from "./routes/game.js";
 import shopRoutes from "./routes/shop.js";
 
@@ -31,7 +30,6 @@ app.use(
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api/auth", authRoutes);
 app.use("/api/game", gameRoutes);
 app.use("/api/shop", shopRoutes);
 

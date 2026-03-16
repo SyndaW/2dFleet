@@ -51,11 +51,21 @@ export async function renderMap() {
   });
 
   if (consumeKey("ArrowRight"))
-    index = Math.min(index + 1, STATE.systems.length - 1);
+  index = Math.min(index + 1, STATE.systems.length - 1);
 
-  if (consumeKey("ArrowLeft")) index = Math.max(index - 1, 0);
+if (consumeKey("ArrowLeft"))
+  index = Math.max(index - 1, 0);
 
-  const selected = STATE.systems[index];
+if (index >= STATE.systems.length) index = 0;
+
+
+  if (STATE.systems.length === 0) return;
+
+const selected = STATE.systems[index];
+
+if (!selected) return;
+
+STATE.selectedSystem = selected.id;
 
   STATE.selectedSystem = selected.id;
 
