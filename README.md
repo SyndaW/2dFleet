@@ -30,15 +30,15 @@ When leaving the station, the same sequence plays **in reverse** as an undocking
 
 ### Mechanics
 
-* Side-view flight
-* Align with docking corridor
-* Control speed
-* Enter the docking zone safely
+- Side-view flight
+- Align with docking corridor
+- Control speed
+- Enter the docking zone safely
 
 ### Result
 
-* Success → access **Shop**
-* Fail → return to **Travel**
+- Success → access **Shop**
+- Fail → return to **Travel**
 
 ---
 
@@ -52,10 +52,10 @@ Shows the **current star system**.
 
 Objects shown:
 
-* Star
-* Planets
-* Space stations
-* Player ship
+- Star
+- Planets
+- Space stations
+- Player ship
 
 Players can select a **station** or **planet** as a destination.
 
@@ -67,10 +67,10 @@ Shows nearby **star systems**.
 
 Players can:
 
-* Select a system
-* See distance
-* Check fuel range
-* Start a hyperspace jump
+- Select a system
+- See distance
+- Check fuel range
+- Start a hyperspace jump
 
 ---
 
@@ -82,16 +82,16 @@ The ship accelerates toward its destination and slows down automatically when ap
 
 ### Features
 
-* Exponential acceleration
-* Distance tracking
-* Arrival detection
+- Exponential acceleration
+- Distance tracking
+- Arrival detection
 
 Maximum speeds can reach extremely high levels for long-distance travel.
 
 Destinations include:
 
-* Space stations
-* Star systems
+- Space stations
+- Star systems
 
 ---
 
@@ -103,19 +103,19 @@ Players can trade commodities.
 
 ### Actions
 
-* Buy goods
-* Sell goods
-* Manage cargo
-* View credits
+- Buy goods
+- Sell goods
+- Manage cargo
+- View credits
 
 ### Example Commodities
 
-* Food
-* Textiles
-* Minerals
-* Machinery
-* Technology
-* Medicine
+- Food
+- Textiles
+- Minerals
+- Machinery
+- Technology
+- Medicine
 
 Prices vary between star systems.
 
@@ -139,13 +139,13 @@ Prices vary between star systems.
 
 Backend
 
-* Node.js
-* Express.js
-* JSON save data
+- Node.js
+- Express.js
+- JSON save data
 
 Frontend
 
-* HTML
-* CSS
-* JavaScript
-* Canvas rendering
+- HTML
+- CSS
+- JavaScript
+- Canvas rendering

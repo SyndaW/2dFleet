@@ -52,19 +52,18 @@ export async function renderMap() {
 
   if (STATE.systems.length === 0) return;
 
-if (consumeKey("ArrowRight"))
-  index = Math.min(index + 1, STATE.systems.length - 1);
+  if (consumeKey("ArrowRight"))
+    index = Math.min(index + 1, STATE.systems.length - 1);
 
-if (consumeKey("ArrowLeft"))
-  index = Math.max(index - 1, 0);
+  if (consumeKey("ArrowLeft")) index = Math.max(index - 1, 0);
 
-if (index >= STATE.systems.length) index = 0;
+  if (index >= STATE.systems.length) index = 0;
 
-const selected = STATE.systems[index];
+  const selected = STATE.systems[index];
 
-if (!selected) return;
+  if (!selected) return;
 
-STATE.selectedSystem = selected.id;
+  STATE.selectedSystem = selected.id;
 
   STATE.selectedSystem = selected.id;
 
