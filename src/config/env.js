@@ -14,7 +14,7 @@ function required(name, fallback = null) {
 
 export const ENV = {
   HOST: process.env.HOST || "localhost",
-  PORT: parseInt(process.env.PORT, 10) || 3000,
+  PORT: Number(process.env.PORT) || 3000,
   NODE_ENV: process.env.NODE_ENV || "development",
   SESSION_SECRET: required(
     "SESSION_SECRET",

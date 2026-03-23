@@ -7,10 +7,12 @@ let distance = 0;
 let velocity = 0;
 let total = 0;
 
+let initialized = false;
+
 export async function renderTravel() {
   const current = STATE.universe[STATE.player.system];
 
-  if (distance === 0) {
+  if (!initialized) {
     const neighbor = current.neighbors.find((n) => n.id === STATE.destination);
 
     if (!neighbor) {
@@ -21,12 +23,13 @@ export async function renderTravel() {
     total = neighbor.distance * 1000;
     distance = total;
     velocity = 2;
+    initialized = true;
   }
 
   velocity *= 1.02;
   distance -= velocity;
 
-  const progress = 1 - distance / total;
+  const progress = Math.min(1, Math.max(0, 1 - distance / total));
 
   panel(40, 40, 420, 200, "Hyperspace");
 
@@ -43,16 +46,18 @@ export async function renderTravel() {
       STATE.fuel = updated.fuel;
       STATE.player.system = updated.system;
       STATE.player.location = updated.location;
+
+      STATE.selectedSystem = updated.system;
     } catch (err) {
       alert(err.message);
     }
 
-    STATE.selectedSystem = STATE.destination;
     STATE.destination = null;
 
     distance = 0;
     velocity = 0;
     total = 0;
+    initialized = false;
 
     STATE.screen = "system";
   }

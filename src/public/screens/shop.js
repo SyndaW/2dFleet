@@ -6,20 +6,21 @@ import { panel, label } from "../engine/ui.js";
 
 let prices = null;
 let loading = false;
+let lastStation = null;
 
 async function loadPrices() {
-  if (prices || loading) return;
+  const currentStation = STATE.player.location;
+
+  // reload only if station changed
+  if (prices && lastStation === currentStation) return;
+  if (loading) return;
 
   loading = true;
+  lastStation = currentStation;
 
   try {
     const data = await getPrices();
-
-    if (data && !data.error) {
-      prices = data;
-    } else {
-      prices = {};
-    }
+    prices = data && !data.error ? data : {};
   } catch (err) {
     console.error("Price load failed:", err);
     prices = {};
@@ -68,7 +69,6 @@ export async function renderShop() {
 
   const cargoCapacity = STATE.player.ship?.cargoCapacity ?? 20;
 
-  // BUY GOODS
   goods.forEach((g, i) => {
     const key = (i + 1).toString();
 
@@ -98,9 +98,9 @@ export async function renderShop() {
     }
   }
 
-  // EXIT STATION
   if (consumeKey("m") || consumeKey("M")) {
     prices = null;
+    lastStation = null;
     STATE.screen = "system";
   }
 }

@@ -16,6 +16,9 @@ router.get("/start", (req, res) => {
 
 router.get("/universe", async (req, res) => {
   const universe = await getUniverse();
+  if (!req.session.player) {
+    req.session.player = createPlayer();
+  }
 
   res.json(universe);
 });
@@ -39,6 +42,10 @@ router.post("/travel", requirePlayer, async (req, res) => {
 
   if (!neighbor) {
     return res.status(400).json({ error: "System unreachable" });
+  }
+
+  if (neighbor.distance > player.ship.jumpRange) {
+    return res.status(400).json({ error: "Out of jump range" });
   }
 
   const fuelCost = neighbor.distance * 10;

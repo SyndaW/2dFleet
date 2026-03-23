@@ -6,6 +6,12 @@ let finished = false;
 
 function resetDocking() {
   finished = false;
+
+  const p = STATE.player;
+  p.vx = 0;
+  p.vy = 0;
+
+  STATE.docking.startTime = 0;
 }
 
 export function renderLanding() {

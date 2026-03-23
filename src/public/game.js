@@ -12,9 +12,11 @@ import { renderTravel } from "./screens/travel.js";
 import { renderShop } from "./screens/shop.js";
 import { renderSystem } from "./screens/system.js";
 
+import { startGame, getUniverse } from "./api.js"; // ✅ use API layer
+
 async function init() {
-  const player = await (await fetch("/api/game/start")).json();
-  const universe = await (await fetch("/api/game/universe")).json();
+  const player = await startGame();
+  const universe = await getUniverse();
 
   STATE.universe = universe;
 

@@ -10,11 +10,17 @@ export function renderHUD() {
   label(`System: ${STATE.player.system}`, 200, 20);
 
   const cargoCount = Object.values(STATE.cargo).reduce((a, b) => a + b, 0);
-  label(`Cargo: ${cargoCount} / ${STATE.cargoCapacity}`, 380, 20);
+  const capacity = STATE.player.ship?.cargoCapacity ?? 0;
+  label(`Cargo: ${cargoCount} / ${capacity}`, 380, 20);
 
   label("Fuel", 560, 12);
 
-  progressBar(560, 30, 150, 12, STATE.fuel / STATE.player.maxFuel, "#06d6a0");
+  const fuelRatio =
+    STATE.player.maxFuel > 0
+      ? STATE.fuel / STATE.player.maxFuel
+      : 0;
+
+  progressBar(560, 30, 150, 12, fuelRatio, "#06d6a0");
 
   if (STATE.destination) {
     label(`Destination: ${STATE.destination}`, 740, 20, "#4dabf7");

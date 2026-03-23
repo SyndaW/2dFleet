@@ -22,6 +22,12 @@ export async function renderMap() {
 
   if (!STATE.selectedSystem) {
     STATE.selectedSystem = STATE.player.system;
+
+    index = STATE.systems.findIndex(
+      (s) => s.id === STATE.player.system
+    );
+
+    if (index === -1) index = 0;
   }
 
   ctx.fillStyle = "#ffffff";
@@ -68,8 +74,13 @@ export async function renderMap() {
   ctx.stroke();
 
   if (consumeKey("t")) {
-    STATE.destination = selected.id;
-    STATE.screen = "travel";
+    const current = STATE.universe[STATE.player.system];
+    const neighbor = current.neighbors.find((n) => n.id === selected.id);
+
+    if (neighbor) {
+      STATE.destination = selected.id;
+      STATE.screen = "travel";
+    }
   }
 
   if (consumeKey("Enter")) {
