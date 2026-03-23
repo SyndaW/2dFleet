@@ -32,11 +32,13 @@ export function renderLanding() {
   p.x += p.vx;
   p.y += p.vy;
 
-  p.vx *= 0.97;
-  p.vy *= 0.97;
+  // ✅ stronger damping (fix runaway speed)
+  p.vx *= 0.92;
+  p.vy *= 0.92;
 
-  p.vx = Math.max(-3, Math.min(3, p.vx));
-  p.vy = Math.max(-3, Math.min(3, p.vy));
+  // ✅ hard clamp
+  p.vx = Math.max(-2, Math.min(2, p.vx));
+  p.vy = Math.max(-2, Math.min(2, p.vy));
 
   ctx.fillStyle = "#fff";
   ctx.fillText("Dock With Station", 50, 60);
@@ -55,11 +57,11 @@ export function renderLanding() {
   const dy = p.y - dock.targetY;
 
   const aligned = Math.abs(dx) < 30 && Math.abs(dy) < 25;
-  const slow = speed < 0.8;
+  const slow = speed < 0.6;
 
   const elapsed = (Date.now() - dock.startTime) / 1000;
 
-  if (elapsed > 15) {
+  if (elapsed > 20) {
     resetDocking();
     STATE.screen = "system";
     return;
@@ -85,8 +87,5 @@ export function renderLanding() {
     return;
   }
 
-  if (!aligned && speed > 2) {
-    resetDocking();
-    STATE.screen = "system";
-  }
+  // ❌ REMOVED forced kickout on high speed
 }

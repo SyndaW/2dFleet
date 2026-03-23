@@ -6,14 +6,15 @@ import { travel } from "../api.js";
 let distance = 0;
 let velocity = 0;
 let total = 0;
-
 let initialized = false;
 
 export async function renderTravel() {
   const current = STATE.universe[STATE.player.system];
 
   if (!initialized) {
-    const neighbor = current.neighbors.find((n) => n.id === STATE.destination);
+    const neighbor = current.neighbors.find(
+      (n) => n.id === STATE.destination
+    );
 
     if (!neighbor) {
       STATE.screen = "map";
@@ -43,6 +44,7 @@ export async function renderTravel() {
     try {
       const updated = await travel(STATE.destination);
 
+      // ✅ FULL SYNC FROM SERVER
       STATE.fuel = updated.fuel;
       STATE.player.system = updated.system;
       STATE.player.location = updated.location;
@@ -50,6 +52,9 @@ export async function renderTravel() {
       STATE.selectedSystem = updated.system;
     } catch (err) {
       alert(err.message);
+
+      // ❗ if server rejects, go back safely
+      STATE.screen = "map";
     }
 
     STATE.destination = null;
