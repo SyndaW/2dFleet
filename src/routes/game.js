@@ -52,7 +52,7 @@ router.post("/travel", requirePlayer, async (req, res) => {
   player.system = system;
   player.location = null;
 
-  const travelTime = calculateTravel(neighbor.distance);
+  const travelTime = calculateTravel(neighbor.distance, player.ship.engineLevel)
 
   savePlayer(req.sessionID, player);
 

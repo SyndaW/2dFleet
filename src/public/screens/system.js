@@ -57,10 +57,10 @@ export function renderSystem() {
     STATE.docking.targetY = 300;
     STATE.docking.startTime = Date.now();
 
-    STATE.screen = "landing";
+    STATE.ui.screen = "landing";
   }
 
   if (consumeKey("m")) {
-    STATE.screen = "map";
+    STATE.ui.screen = "map";
   }
 }

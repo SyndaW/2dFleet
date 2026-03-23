@@ -63,7 +63,7 @@ export function renderLanding() {
 
   if (elapsed > 20) {
     resetDocking();
-    STATE.screen = "system";
+    STATE.ui.screen = "system";
     return;
   }
 
@@ -81,7 +81,7 @@ export function renderLanding() {
 
     setTimeout(() => {
       resetDocking();
-      STATE.screen = "shop";
+      STATE.ui.screen = "shop";
     }, 300);
 
     return;

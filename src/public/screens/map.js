@@ -4,110 +4,127 @@ import { consumeKey } from "../engine/input.js";
 import { panel, label } from "../engine/ui.js";
 
 let index = 0;
+let initialized = false;
 
-async function loadUniverse() {
-  if (!STATE.universe) {
-    const res = await fetch("/api/game/universe");
-    STATE.universe = await res.json();
-  }
+function initSystems() {
+  if (!STATE.universe) return;
 
   STATE.systems = Object.keys(STATE.universe).map((id) => ({
     id,
     ...STATE.universe[id],
   }));
+
+  index = STATE.systems.findIndex(
+    (s) => s.id === STATE.player.system
+  );
+
+  if (index === -1) index = 0;
+
+  STATE.selectedSystem = STATE.systems[index]?.id;
+
+  initialized = true;
 }
 
-export async function renderMap() {
-  await loadUniverse();
-
-  if (!STATE.selectedSystem) {
-    STATE.selectedSystem = STATE.player.system;
-
-    index = STATE.systems.findIndex(
-      (s) => s.id === STATE.player.system
-    );
-
-    if (index === -1) index = 0;
+export function renderMap() {
+  // Wait until universe is loaded
+  if (!STATE.universe) {
+    panel(40, 40, 300, 120, "Loading...");
+    return;
   }
 
-  panel(30, 30, 260, 150, "GALAXY MAP");
+  // Initialize once
+  if (!initialized) {
+    initSystems();
+  }
 
-  label("← → Select System", 50, 70);
-  label("T Jump", 50, 95);
-  label("ENTER System View", 50, 120);
+  const systems = STATE.systems;
+  if (!systems.length) return;
 
-  // INPUT
-  if (consumeKey("ArrowRight"))
-    index = Math.min(index + 1, STATE.systems.length - 1);
+  // INPUT (clean + predictable)
+  if (consumeKey("ArrowRight")) {
+    index = (index + 1) % systems.length;
+  }
 
-  if (consumeKey("ArrowLeft"))
-    index = Math.max(index - 1, 0);
+  if (consumeKey("ArrowLeft")) {
+    index = (index - 1 + systems.length) % systems.length;
+  }
 
-  const selected = STATE.systems[index];
+  const selected = systems[index];
   if (!selected) return;
 
   STATE.selectedSystem = selected.id;
 
-  // DRAW SYSTEMS
-  STATE.systems.forEach((sys) => {
-    ctx.fillStyle = "#ffaa00";
-    ctx.beginPath();
-    ctx.arc(sys.x, sys.y, 12, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#fff";
-    ctx.fillText(sys.name, sys.x - 20, sys.y + 25);
-  });
-
-  // SELECTED highlight
-  ctx.strokeStyle = "#00ffcc";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.arc(selected.x, selected.y, 18, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // PLAYER highlight
-  const playerSystem = STATE.universe[STATE.player.system];
-
-  ctx.strokeStyle = "#4dabf7";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(playerSystem.x, playerSystem.y, 24, 0, Math.PI * 2);
-  ctx.stroke();
-
-  label(`Selected: ${selected.name}`, 50, 160, "#00ffcc");
-
   const current = STATE.universe[STATE.player.system];
-  const neighbor = current.neighbors.find((n) => n.id === selected.id);
+  const neighbor = current?.neighbors?.find(
+    (n) => n.id === selected.id
+  );
 
+  // UI PANEL
+  panel(30, 30, 280, 170, "Galaxy Map");
+
+  label("← → Select", 50, 70);
+  label("T Jump", 50, 95);
+  label("ESC Cancel", 50, 120);
+
+  label(`Selected: ${selected.name}`, 50, 150, "#00ffcc");
+
+  // DISTANCE / STATUS
   if (neighbor) {
     label(`Distance: ${neighbor.distance} LY`, 50, 180);
-  } else {
-    label("Not directly reachable", 50, 180, "#ff6b6b");
-  }
-
-  // 🚀 TRAVEL (STRICT CHECKS)
-  if (consumeKey("t") || consumeKey("T")) {
-    if (!neighbor) {
-      alert("System not reachable from current system");
-      return;
-    }
-
-    if (neighbor.distance > STATE.player.ship.jumpRange) {
-      alert("Out of jump range");
-      return;
-    }
 
     const fuelCost = neighbor.distance * 10;
 
-    if (STATE.fuel < fuelCost) {
-      alert("Not enough fuel");
-      return;
+    if (neighbor.distance > STATE.player.ship.jumpRange) {
+      label("Out of range", 50, 200, "#ff6b6b");
+    } else if (STATE.player.fuel < fuelCost) {
+      label("Not enough fuel", 50, 200, "#ff6b6b");
+    } else {
+      label("Ready to jump", 50, 200, "#06d6a0");
     }
-
-    STATE.destination = selected.id;
-    STATE.screen = "travel";
+  } else {
+    label("Not connected", 50, 180, "#ff6b6b");
   }
 
-  // ❌ removed free ENTER teleport
+  // DRAW SYSTEMS
+  systems.forEach((sys) => {
+    ctx.fillStyle = "#ffaa00";
+
+    ctx.beginPath();
+    ctx.arc(sys.x, sys.y, 10, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(sys.name, sys.x - 20, sys.y + 20);
+  });
+
+  // CURRENT SYSTEM
+  if (current) {
+    ctx.strokeStyle = "#4dabf7";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.arc(current.x, current.y, 22, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // SELECTED SYSTEM
+  ctx.strokeStyle = "#00ffcc";
+  ctx.lineWidth = 3;
+
+  ctx.beginPath();
+  ctx.arc(selected.x, selected.y, 16, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // TRAVEL (safe)
+  if (consumeKey("t") || consumeKey("T")) {
+    if (!neighbor) return;
+
+    const fuelCost = neighbor.distance * 10;
+
+    if (neighbor.distance > STATE.player.ship.jumpRange) return;
+    if (STATE.player.fuel < fuelCost) return;
+
+    STATE.ui.destination = selected.id;
+    STATE.ui.screen = "travel";
+  }
 }

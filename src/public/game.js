@@ -33,18 +33,18 @@ async function init() {
     ship: player.ship,
   });
 
-  STATE.screen = "map";
+  STATE.ui.screen = "map";
 }
 
-window.openMap = () => (STATE.screen = "map");
-window.openTravel = () => (STATE.screen = "travel");
-window.openShop = () => (STATE.screen = "shop");
+window.openMap = () => (STATE.ui.screen = "map");
+window.openTravel = () => (STATE.ui.screen = "travel");
+window.openShop = () => (STATE.ui.screen = "shop");
 
 function loop() {
   clear();
   renderStars();
 
-  switch (STATE.screen) {
+  switch (STATE.ui.screen) {
     case "landing":
       renderLanding();
       break;

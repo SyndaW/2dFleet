@@ -1,28 +1,42 @@
 import { STATE } from "./state.js";
-import { canvas } from "./canvas.js";
+import { canvas, ctx } from "./canvas.js";
 import { panel, label, progressBar } from "./ui.js";
 
 export function renderHUD() {
-  panel(0, 0, canvas.width, 60);
+  // DYNAMIC PANEL HEIGHT / WIDTH
+  const hudHeight = 60;
+  const hudWidth = canvas.width;
 
-  label(`Credits: ${STATE.credits}`, 20, 20, "#b58900");
+  panel(0, 0, hudWidth, hudHeight);
 
-  label(`System: ${STATE.player.system}`, 200, 20);
+  const player = STATE.player || {};
+  const ship = player.ship || {};
 
-  const cargoCount = Object.values(STATE.cargo).reduce((a, b) => a + b, 0);
-  const capacity = STATE.player.ship?.cargoCapacity ?? 0;
-  label(`Cargo: ${cargoCount} / ${capacity}`, 380, 20);
+  // CREDITS
+  const credits = STATE.player.credits ?? 0;
+  label(`Credits: ${credits}`, 20, 20, "#b58900");
 
-  label("Fuel", 560, 12);
+  // SYSTEM
+  const systemName = player.system || "Unknown";
+  label(`System: ${systemName}`, 220, 20);
 
-  const fuelRatio =
-    STATE.player.maxFuel > 0
-      ? STATE.fuel / STATE.player.maxFuel
-      : 0;
+  // CARGO
+  const cargoCount = Object.values(STATE.cargo || {}).reduce((a, b) => a + b, 0);
+  const cargoCapacity = ship.cargoCapacity ?? 0;
+  label(`Cargo: ${cargoCount} / ${cargoCapacity}`, 420, 20);
 
-  progressBar(560, 30, 150, 12, fuelRatio, "#06d6a0");
+  // FUEL
+  const fuel = STATE.player.fuel ?? 0;
+  const maxFuel = player.maxFuel ?? ship.fuelCapacity ?? 100;
+  const fuelRatio = maxFuel > 0 ? fuel / maxFuel : 0;
+  const fuelColor = fuelRatio < 0.2 ? "#cb4b16" : "#06d6a0"; // warning if low
 
-  if (STATE.destination) {
-    label(`Destination: ${STATE.destination}`, 740, 20, "#4dabf7");
+  label("Fuel", 600, 12);
+  progressBar(600, 30, 150, 12, fuelRatio, fuelColor);
+
+  // DESTINATION
+  if (STATE.ui.destination) {
+    const dest = STATE.universe?.[STATE.ui.destination]?.name || STATE.ui.destination;
+    label(`Destination: ${dest}`, 780, 20, "#4dabf7");
   }
 }

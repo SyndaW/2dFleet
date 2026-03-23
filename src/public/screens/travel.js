@@ -1,69 +1,83 @@
-import { ctx } from "../engine/canvas.js";
 import { STATE } from "../engine/state.js";
 import { panel, label, progressBar } from "../engine/ui.js";
 import { travel } from "../api.js";
 
-let distance = 0;
-let velocity = 0;
-let total = 0;
-let initialized = false;
+let startTime = 0;
+let duration = 0;
+let inProgress = false;
+let completed = false;
 
 export async function renderTravel() {
   const current = STATE.universe[STATE.player.system];
 
-  if (!initialized) {
+  // INIT TRAVEL (once)
+  if (!inProgress) {
     const neighbor = current.neighbors.find(
-      (n) => n.id === STATE.destination
+      (n) => n.id === STATE.ui.destination
     );
 
     if (!neighbor) {
-      STATE.screen = "map";
+      STATE.ui.screen = "map";
       return;
     }
 
-    total = neighbor.distance * 1000;
-    distance = total;
-    velocity = 2;
-    initialized = true;
+    try {
+      const result = await travel(STATE.ui.destination);
+
+      duration = (result.travelTime || 5) * 1000; // ms
+      startTime = Date.now();
+      inProgress = true;
+      completed = false;
+
+      // Pre-store result for later
+      STATE._pendingTravelResult = result;
+    } catch (err) {
+      alert(err.message);
+      STATE.ui.screen = "map";
+      return;
+    }
   }
 
-  velocity *= 1.02;
-  distance -= velocity;
-
-  const progress = Math.min(1, Math.max(0, 1 - distance / total));
+  // PROGRESS CALC
+  const elapsed = Date.now() - startTime;
+  const progress = Math.min(1, elapsed / duration);
 
   panel(40, 40, 420, 200, "Hyperspace");
 
-  label(`Destination: ${STATE.destination}`, 60, 90);
-  label(`Velocity: ${velocity.toFixed(2)}`, 60, 120);
-  label(`Distance: ${Math.max(0, distance).toFixed(0)}`, 60, 150);
+  label(`Destination: ${STATE.ui.destination}`, 60, 90);
 
-  progressBar(60, 180, 350, 14, progress);
+  label(
+    `Time Remaining: ${Math.max(
+      0,
+      Math.ceil((duration - elapsed) / 1000)
+    )}s`,
+    60,
+    120
+  );
 
-  if (distance <= 0) {
-    try {
-      const updated = await travel(STATE.destination);
+  progressBar(60, 160, 350, 18, progress);
 
-      // ✅ FULL SYNC FROM SERVER
-      STATE.fuel = updated.fuel;
-      STATE.player.system = updated.system;
-      STATE.player.location = updated.location;
+  // COMPLETE (once)
+  if (progress >= 1 && !completed) {
+    completed = true;
 
-      STATE.selectedSystem = updated.system;
-    } catch (err) {
-      alert(err.message);
+    const updated = STATE._pendingTravelResult;
 
-      // ❗ if server rejects, go back safely
-      STATE.screen = "map";
-    }
+    // FULL SYNC
+    STATE.player.fuel = updated.fuel;
+    STATE.player.system = updated.system;
+    STATE.player.location = updated.location;
 
-    STATE.destination = null;
+    STATE.selectedSystem = updated.system;
 
-    distance = 0;
-    velocity = 0;
-    total = 0;
-    initialized = false;
+    // RESET
+    STATE.ui.destination = null;
+    STATE._pendingTravelResult = null;
 
-    STATE.screen = "system";
+    inProgress = false;
+    startTime = 0;
+    duration = 0;
+
+    STATE.ui.screen = "system";
   }
 }
