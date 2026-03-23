@@ -21,16 +21,6 @@ export async function renderTravel() {
     total = neighbor.distance * 1000;
     distance = total;
     velocity = 2;
-
-    const fuelCost = neighbor.distance * 10;
-
-    if (STATE.fuel < fuelCost) {
-      alert("Not enough fuel");
-      STATE.screen = "map";
-      return;
-    }
-
-    STATE.fuel -= fuelCost;
   }
 
   velocity *= 1.02;
@@ -47,9 +37,15 @@ export async function renderTravel() {
   progressBar(60, 180, 350, 14, progress);
 
   if (distance <= 0) {
-    await travel(STATE.destination);
-    STATE.selectedSystem = STATE.destination;
+    const updated = await travel(STATE.destination);
 
+    if (!updated.error) {
+      STATE.fuel = updated.fuel;
+      STATE.player.system = updated.system;
+      STATE.player.location = updated.location;
+    }
+
+    STATE.selectedSystem = STATE.destination;
     STATE.destination = null;
 
     distance = 0;

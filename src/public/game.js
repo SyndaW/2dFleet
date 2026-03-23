@@ -22,7 +22,11 @@ async function init() {
   STATE.credits = player.credits;
   STATE.cargo = player.cargo;
   STATE.fuel = player.fuel;
+
   STATE.player.system = player.system;
+  STATE.player.location = player.location;
+  STATE.player.maxFuel = player.maxFuel;
+  STATE.player.ship = player.ship;
 
   STATE.screen = "map";
 }
@@ -41,33 +45,27 @@ window.openShop = () => {
 
 function loop() {
   clear();
-
   renderStars();
 
   switch (STATE.screen) {
     case "landing":
       renderLanding();
       break;
-
     case "map":
       renderMap();
       break;
-
     case "travel":
       renderTravel();
       break;
-
     case "shop":
       renderShop();
       break;
-
     case "system":
       renderSystem();
       break;
   }
 
   renderHUD();
-
   requestAnimationFrame(loop);
 }
 

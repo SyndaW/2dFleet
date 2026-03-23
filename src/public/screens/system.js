@@ -1,27 +1,25 @@
 import { ctx } from "../engine/canvas.js";
 import { STATE } from "../engine/state.js";
-import { keys } from "../engine/input.js";
+import { consumeKey } from "../engine/input.js";
 import { panel, label } from "../engine/ui.js";
 
 export function renderSystem() {
   const system = STATE.universe[STATE.selectedSystem || STATE.player.system];
 
-  ctx.fillStyle = "#586e75";
   panel(30, 30, 260, 120, "System");
 
   label(system.name, 50, 70, "#4dabf7");
   label("D Dock station", 50, 95);
   label("M Galaxy map", 50, 120);
 
-  // Draw star at center
   ctx.fillStyle = "#b58900";
   ctx.beginPath();
   ctx.arc(500, 300, 30, 0, Math.PI * 2);
   ctx.fill();
 
-  // Draw orbiting planets
   system.planets.forEach((p, i) => {
     const orbit = 100 + i * 60;
+
     ctx.strokeStyle = "#444";
     ctx.beginPath();
     ctx.arc(500, 300, orbit, 0, Math.PI * 2);
@@ -39,14 +37,12 @@ export function renderSystem() {
     ctx.fillText(p, x + 10, y);
   });
 
-  // Draw stations
   system.stations.forEach((s, i) => {
     ctx.fillRect(650, 300 + i * 40, 15, 15);
     ctx.fillText(s.name, 670, 310 + i * 40);
   });
 
-  // Docking key
-  if (keys["d"]) {
+  if (consumeKey("d")) {
     const systemId = STATE.selectedSystem || STATE.player.system;
 
     STATE.player.system = systemId;
@@ -64,7 +60,7 @@ export function renderSystem() {
     STATE.screen = "landing";
   }
 
-  if (keys["m"]) {
+  if (consumeKey("m")) {
     STATE.screen = "map";
   }
 }

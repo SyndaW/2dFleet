@@ -2,9 +2,7 @@ export const STATE = {
   screen: "map",
 
   universe: null,
-
   systems: [],
-
   selectedSystem: null,
 
   player: {
@@ -12,13 +10,17 @@ export const STATE = {
     y: 200,
     vx: 0,
     vy: 0,
-    speed: 0,
+
+    system: "sol",
+    location: null,
+    maxFuel: 100,
+    ship: {
+      cargoCapacity: 20,
+    },
   },
 
   credits: 1000,
-
   cargo: {},
-  cargoCapacity: 20,
 
   fuel: 100,
 
@@ -27,5 +29,6 @@ export const STATE = {
   docking: {
     targetX: 500,
     targetY: 300,
+    startTime: 0,
   },
 };

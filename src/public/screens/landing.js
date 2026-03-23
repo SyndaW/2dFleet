@@ -12,6 +12,10 @@ export function renderLanding() {
   const p = STATE.player;
   const dock = STATE.docking;
 
+  if (!dock.startTime) {
+    dock.startTime = Date.now();
+  }
+
   if (finished) return;
 
   if (keys["ArrowUp"]) p.vy -= 0.1;
@@ -39,7 +43,6 @@ export function renderLanding() {
 
   const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
 
-  ctx.fillStyle = "#fff";
   ctx.fillText("Speed: " + speed.toFixed(2), 50, 100);
 
   const dx = p.x - dock.targetX;
@@ -62,7 +65,7 @@ export function renderLanding() {
     const systemId = STATE.player.system;
     const system = STATE.universe[systemId];
 
-    if (system && system.stations.length > 0) {
+    if (system?.stations?.length) {
       STATE.player.location = system.stations[0].id;
     }
 

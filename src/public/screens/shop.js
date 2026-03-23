@@ -80,12 +80,13 @@ export async function renderShop() {
     }
   });
 
-  // SELL ALL
   if (consumeKey("s") || consumeKey("S")) {
     goods.forEach((g) => {
-      if ((STATE.cargo[g] || 0) > 0) {
-        STATE.cargo[g]--;
-        STATE.credits += Math.round(prices[g] * 0.8);
+      const amount = STATE.cargo[g] || 0;
+
+      if (amount > 0) {
+        STATE.credits += Math.round(prices[g] * 0.8 * amount);
+        STATE.cargo[g] = 0;
       }
     });
   }
