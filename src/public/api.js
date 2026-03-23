@@ -22,7 +22,7 @@ export async function travel(system) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ system }),
-    })
+    }),
   );
 }
 
@@ -34,9 +34,9 @@ export async function buy(item) {
   return handle(
     await fetch("/api/shop/buy", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ item })
-    })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ item }),
+    }),
   );
 }
 

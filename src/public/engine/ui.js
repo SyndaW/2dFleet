@@ -19,12 +19,12 @@ export function label(text, x, y, color = COLORS.text) {
   ctx.fillText(text, x, y);
 }
 
-export function progressBar(x, y, w, h, value) {
+export function progressBar(x, y, w, h, value, color = COLORS.highlight) {
   ctx.fillStyle = COLORS.panel;
   ctx.fillRect(x, y, w, h);
 
-  ctx.fillStyle = COLORS.highlight;
-  ctx.fillRect(x, y, w * value, h);
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w * Math.max(0, Math.min(1, value)), h);
 
   ctx.strokeStyle = COLORS.border;
   ctx.strokeRect(x, y, w, h);

@@ -14,7 +14,6 @@ export function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-
 export function drawText(text, x, y, color = "#ffffff") {
   ctx.lineWidth = 4;
   ctx.strokeStyle = "#000000";

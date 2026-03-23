@@ -13,7 +13,7 @@ export async function renderTravel() {
   // INIT TRAVEL (once)
   if (!inProgress) {
     const neighbor = current.neighbors.find(
-      (n) => n.id === STATE.ui.destination
+      (n) => n.id === STATE.ui.destination,
     );
 
     if (!neighbor) {
@@ -47,12 +47,9 @@ export async function renderTravel() {
   label(`Destination: ${STATE.ui.destination}`, 60, 90);
 
   label(
-    `Time Remaining: ${Math.max(
-      0,
-      Math.ceil((duration - elapsed) / 1000)
-    )}s`,
+    `Time Remaining: ${Math.max(0, Math.ceil((duration - elapsed) / 1000))}s`,
     60,
-    120
+    120,
   );
 
   progressBar(60, 160, 350, 18, progress);

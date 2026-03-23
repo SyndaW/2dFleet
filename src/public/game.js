@@ -1,7 +1,7 @@
 import "./engine/input.js";
 
 import { clear } from "./engine/canvas.js";
-import { STATE } from "./engine/state.js";
+import { STATE, setPlayer } from "./engine/state.js";
 
 import { renderHUD } from "./engine/hud.js";
 import { renderStars } from "./engine/stars.js";
@@ -12,58 +12,124 @@ import { renderTravel } from "./screens/travel.js";
 import { renderShop } from "./screens/shop.js";
 import { renderSystem } from "./screens/system.js";
 
-import { startGame, getUniverse } from "./api.js"; // ✅ use API layer
+import { startGame, getUniverse } from "./api.js";
+
+/* =========================
+ * 🚀 INIT
+ * ========================= */
 
 async function init() {
-  const player = await startGame();
-  const universe = await getUniverse();
+  try {
+    STATE.ui.screen = "loading";
 
-  STATE.universe = universe;
+    const [player, universe] = await Promise.all([startGame(), getUniverse()]);
 
-  Object.assign(STATE, {
-    credits: player.credits,
-    cargo: player.cargo,
-    fuel: player.fuel,
-  });
+    STATE.universe = universe;
 
-  Object.assign(STATE.player, {
-    system: player.system,
-    location: player.location,
-    maxFuel: player.maxFuel,
-    ship: player.ship,
-  });
+    // ✅ single source of truth
+    setPlayer(player);
 
-  STATE.ui.screen = "map";
+    // Start at map
+    STATE.ui.screen = "map";
+  } catch (err) {
+    console.error(err);
+
+    STATE.ui.screen = "error";
+    STATE.ui.errorMessage = err?.message || "Failed to start game";
+  }
 }
 
-window.openMap = () => (STATE.ui.screen = "map");
-window.openTravel = () => (STATE.ui.screen = "travel");
-window.openShop = () => (STATE.ui.screen = "shop");
+/* =========================
+ * 🎮 UI ACTIONS (minimal global exposure)
+ * ========================= */
 
-function loop() {
+function openScreen(screen) {
+  STATE.ui.screen = screen;
+}
+
+window.UI = {
+  map: () => openScreen("map"),
+  travel: () => openScreen("travel"),
+  shop: () => openScreen("shop"),
+};
+
+/* =========================
+ * 🎨 RENDER LOOP
+ * ========================= */
+
+function render() {
   clear();
   renderStars();
 
-  switch (STATE.ui.screen) {
+  const screen = STATE.ui.screen;
+
+  switch (screen) {
+    case "loading":
+      renderLoading();
+      break;
+
+    case "error":
+      renderError();
+      break;
+
     case "landing":
       renderLanding();
       break;
+
     case "map":
       renderMap();
       break;
+
     case "travel":
       renderTravel();
       break;
+
     case "shop":
       renderShop();
       break;
+
     case "system":
       renderSystem();
       break;
   }
 
-  renderHUD();
+  // HUD only when player exists
+  if (STATE.player) {
+    renderHUD();
+  }
+}
+
+/**
+ * Stable game loop
+ */
+function loop() {
+  render();
   requestAnimationFrame(loop);
 }
 
-init().then(loop).catch(console.error);
+/* =========================
+ * 🧾 SCREENS (fallback UI)
+ * ========================= */
+
+function renderLoading() {
+  const ctx = document.getElementById("game").getContext("2d");
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText("Loading game...", 50, 80);
+}
+
+function renderError() {
+  const ctx = document.getElementById("game").getContext("2d");
+
+  ctx.fillStyle = "#ff6b6b";
+  ctx.fillText("Error starting game", 50, 80);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(STATE.ui.errorMessage || "", 50, 110);
+}
+
+/* =========================
+ * ▶ START
+ * ========================= */
+
+init().then(loop);

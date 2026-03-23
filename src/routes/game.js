@@ -37,8 +37,7 @@ router.post("/travel", requirePlayer, async (req, res) => {
   const current = universe[player.system];
   const neighbor = current.neighbors.find((n) => n.id === system);
 
-  if (!neighbor)
-    return res.status(400).json({ error: "System unreachable" });
+  if (!neighbor) return res.status(400).json({ error: "System unreachable" });
 
   if (neighbor.distance > player.ship.jumpRange)
     return res.status(400).json({ error: "Out of range" });
@@ -52,7 +51,10 @@ router.post("/travel", requirePlayer, async (req, res) => {
   player.system = system;
   player.location = null;
 
-  const travelTime = calculateTravel(neighbor.distance, player.ship.engineLevel)
+  const travelTime = calculateTravel(
+    neighbor.distance,
+    player.ship.engineLevel,
+  );
 
   savePlayer(req.sessionID, player);
 

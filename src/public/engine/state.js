@@ -6,7 +6,6 @@ export const STATE = {
 
   player: null, // ✅ single source of truth (comes from API)
 
-
   /* =========================
    * 🎮 UI STATE (client-only)
    * ========================= */
@@ -25,7 +24,6 @@ export const STATE = {
     },
   },
 
-
   /* =========================
    * 🚀 LOCAL RUNTIME STATE
    * (purely visual / temporary)
@@ -39,7 +37,6 @@ export const STATE = {
     },
   },
 };
-
 
 /* =========================
  * 🔄 STATE HELPERS

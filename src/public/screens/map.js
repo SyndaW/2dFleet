@@ -14,9 +14,7 @@ function initSystems() {
     ...STATE.universe[id],
   }));
 
-  index = STATE.systems.findIndex(
-    (s) => s.id === STATE.player.system
-  );
+  index = STATE.systems.findIndex((s) => s.id === STATE.player.system);
 
   if (index === -1) index = 0;
 
@@ -55,9 +53,7 @@ export function renderMap() {
   STATE.selectedSystem = selected.id;
 
   const current = STATE.universe[STATE.player.system];
-  const neighbor = current?.neighbors?.find(
-    (n) => n.id === selected.id
-  );
+  const neighbor = current?.neighbors?.find((n) => n.id === selected.id);
 
   // UI PANEL
   panel(30, 30, 280, 170, "Galaxy Map");

@@ -70,9 +70,7 @@ function validateSecret(name, value, isProd) {
   }
 
   if (isProd && value.length < 16) {
-    throw new Error(
-      `❌ ${name} must be at least 16 characters in production`
-    );
+    throw new Error(`❌ ${name} must be at least 16 characters in production`);
   }
 
   return value;
@@ -102,14 +100,16 @@ const PORT = validatePort(number("PORT", 3000));
 
 const SESSION_SECRET = validateSecret(
   "SESSION_SECRET",
-  isProd ? required("SESSION_SECRET") : optional("SESSION_SECRET", "dev-secret"),
   isProd
+    ? required("SESSION_SECRET")
+    : optional("SESSION_SECRET", "dev-secret"),
+  isProd,
 );
 
 const ADMIN_PASSWORD = validateSecret(
   "ADMIN_PASSWORD",
   isProd ? required("ADMIN_PASSWORD") : optional("ADMIN_PASSWORD", "dev-admin"),
-  isProd
+  isProd,
 );
 
 /* ========================= */
