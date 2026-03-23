@@ -1,4 +1,34 @@
+function api(url, options = {}) {
+  return fetch(url, {
+    credentials: "include", // ✅ send session cookie
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+    ...options,
+  });
+}
+
+/**
+ * Central response handler
+ * - Handles 401 by restoring session
+ * - Throws clean errors for UI
+ */
 async function handle(res) {
+  // 🔥 SESSION LOST → auto-recover
+  if (res.status === 401) {
+    try {
+      console.warn("Session expired. Restoring...");
+
+      // Recreate / restore session
+      await startGame();
+
+      throw new Error("Session restored. Please retry.");
+    } catch (err) {
+      throw new Error("Session expired. Reloading game...");
+    }
+  }
+
   const data = await res.json();
 
   if (!res.ok) {
@@ -8,42 +38,48 @@ async function handle(res) {
   return data;
 }
 
+/* =========================
+ * 🎮 GAME
+ * ========================= */
+
 export async function startGame() {
-  return handle(await fetch("/api/game/start"));
+  return handle(await api("/api/game/start"));
 }
 
 export async function getUniverse() {
-  return handle(await fetch("/api/game/universe"));
+  return handle(await api("/api/game/universe"));
 }
 
 export async function travel(system) {
   return handle(
-    await fetch("/api/game/travel", {
+    await api("/api/game/travel", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ system }),
     }),
   );
 }
 
+/* =========================
+ * 🛒 SHOP
+ * ========================= */
+
 export async function getPrices() {
-  return handle(await fetch("/api/shop"));
+  return handle(await api("/api/shop"));
 }
 
 export async function buy(item) {
   return handle(
-    await fetch("/api/shop/buy", {
+    await api("/api/shop/buy", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ item }),
     }),
   );
 }
 
 export async function sell() {
-  return handle(await fetch("/api/shop/sell", { method: "POST" }));
+  return handle(await api("/api/shop/sell", { method: "POST" }));
 }
 
 export async function fuel() {
-  return handle(await fetch("/api/shop/fuel", { method: "POST" }));
+  return handle(await api("/api/shop/fuel", { method: "POST" }));
 }

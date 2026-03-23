@@ -21,8 +21,9 @@ app.use(
     secret: ENV.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+
     cookie: {
-      secure: isProd,
+      secure: false, // ✅ ALWAYS false in local dev (IMPORTANT)
       httpOnly: true,
       sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24,
