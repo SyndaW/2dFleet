@@ -37,12 +37,14 @@ export async function renderTravel() {
   progressBar(60, 180, 350, 14, progress);
 
   if (distance <= 0) {
-    const updated = await travel(STATE.destination);
+    try {
+      const updated = await travel(STATE.destination);
 
-    if (!updated.error) {
       STATE.fuel = updated.fuel;
       STATE.player.system = updated.system;
       STATE.player.location = updated.location;
+    } catch (err) {
+      alert(err.message);
     }
 
     STATE.selectedSystem = STATE.destination;

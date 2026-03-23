@@ -6,6 +6,7 @@ export function createPlayer() {
     location: "sol_station",
     fuel: 100,
     maxFuel: 100,
+
     ship: {
       cargoCapacity: 20,
       fuelCapacity: 100,

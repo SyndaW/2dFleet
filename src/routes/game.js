@@ -23,25 +23,28 @@ router.get("/universe", async (req, res) => {
 router.post("/travel", requirePlayer, async (req, res) => {
   const { system } = req.body;
 
+  if (!system) {
+    return res.status(400).json({ error: "Missing system" });
+  }
+
   const player = req.session.player;
   const universe = await getUniverse();
 
   const current = universe[player.system];
+  if (!current) {
+    return res.status(400).json({ error: "Invalid current system" });
+  }
 
   const neighbor = current.neighbors.find((n) => n.id === system);
 
   if (!neighbor) {
-    return res.status(400).json({
-      error: "System unreachable",
-    });
+    return res.status(400).json({ error: "System unreachable" });
   }
 
   const fuelCost = neighbor.distance * 10;
 
   if (player.fuel < fuelCost) {
-    return res.status(400).json({
-      error: "Not enough fuel",
-    });
+    return res.status(400).json({ error: "Not enough fuel" });
   }
 
   player.fuel -= fuelCost;

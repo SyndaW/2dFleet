@@ -3,7 +3,7 @@ import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { ENV } from "./config/env.js";
+import { ENV, isProd } from "./config/env.js";
 
 import gameRoutes from "./routes/game.js";
 import shopRoutes from "./routes/shop.js";
@@ -17,15 +17,17 @@ app.use(express.json());
 
 app.use(
   session({
+    name: "2dfleet.sid",
     secret: ENV.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: ENV.NODE_ENV === "production",
+      secure: isProd,
       httpOnly: true,
       sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
-  }),
+  })
 );
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -39,5 +41,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(ENV.PORT, () => {
-  console.log(`2dFleet running on port ${ENV.PORT}`);
+  console.log(`2dFleet running on http://${ENV.HOST}:${ENV.PORT}`);
 });

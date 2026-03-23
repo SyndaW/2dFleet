@@ -1,23 +1,31 @@
+async function handle(res) {
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.error || "API error");
+  }
+
+  return data;
+}
+
 export async function startGame() {
-  const res = await fetch("/api/game/start");
-  return res.json();
+  return handle(await fetch("/api/game/start"));
 }
 
 export async function getUniverse() {
-  const res = await fetch("/api/game/universe");
-  return res.json();
+  return handle(await fetch("/api/game/universe"));
 }
 
 export async function travel(system) {
-  const res = await fetch("/api/game/travel", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ system }),
-  });
-  return res.json();
+  return handle(
+    await fetch("/api/game/travel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ system }),
+    })
+  );
 }
 
 export async function getPrices() {
-  const res = await fetch("/api/shop");
-  return res.json();
+  return handle(await fetch("/api/shop"));
 }

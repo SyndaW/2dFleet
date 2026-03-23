@@ -13,35 +13,30 @@ import { renderShop } from "./screens/shop.js";
 import { renderSystem } from "./screens/system.js";
 
 async function init() {
-  const res = await fetch("/api/game/start");
-  const player = await res.json();
+  const player = await (await fetch("/api/game/start")).json();
+  const universe = await (await fetch("/api/game/universe")).json();
 
-  const u = await fetch("/api/game/universe");
-  STATE.universe = await u.json();
+  STATE.universe = universe;
 
-  STATE.credits = player.credits;
-  STATE.cargo = player.cargo;
-  STATE.fuel = player.fuel;
+  Object.assign(STATE, {
+    credits: player.credits,
+    cargo: player.cargo,
+    fuel: player.fuel,
+  });
 
-  STATE.player.system = player.system;
-  STATE.player.location = player.location;
-  STATE.player.maxFuel = player.maxFuel;
-  STATE.player.ship = player.ship;
+  Object.assign(STATE.player, {
+    system: player.system,
+    location: player.location,
+    maxFuel: player.maxFuel,
+    ship: player.ship,
+  });
 
   STATE.screen = "map";
 }
 
-window.openMap = () => {
-  STATE.screen = "map";
-};
-
-window.openTravel = () => {
-  STATE.screen = "travel";
-};
-
-window.openShop = () => {
-  STATE.screen = "shop";
-};
+window.openMap = () => (STATE.screen = "map");
+window.openTravel = () => (STATE.screen = "travel");
+window.openShop = () => (STATE.screen = "shop");
 
 function loop() {
   clear();
@@ -69,4 +64,4 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-init().then(loop);
+init().then(loop).catch(console.error);

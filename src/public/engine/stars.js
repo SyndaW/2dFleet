@@ -14,13 +14,12 @@ function generateStars() {
 }
 
 generateStars();
-
 window.addEventListener("resize", generateStars);
 
 export function renderStars() {
   ctx.fillStyle = "#ffffff22";
 
-  stars.forEach((s) => {
+  for (const s of stars) {
     ctx.fillRect(s.x, s.y, 2, 2);
-  });
+  }
 }
