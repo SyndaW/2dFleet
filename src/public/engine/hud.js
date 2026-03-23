@@ -5,7 +5,7 @@ import { panel, label, progressBar } from "./ui.js";
 export function renderHUD() {
   panel(0, 0, canvas.width, 60);
 
-  label(`Credits: ${STATE.credits}`, 20, 20, "#ffd166");
+  label(`Credits: ${STATE.credits}`, 20, 20, "#b58900");
 
   label(`System: ${STATE.player.system}`, 200, 20);
 

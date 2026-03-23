@@ -1,32 +1,32 @@
 import { ctx } from "./canvas.js";
+import { COLORS } from "./theme.js";
 
 export function panel(x, y, w, h, title = null) {
-  ctx.fillStyle = "rgba(10,15,28,0.85)";
+  ctx.fillStyle = COLORS.panel;
   ctx.fillRect(x, y, w, h);
 
-  ctx.strokeStyle = "#4dabf7";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = COLORS.border;
   ctx.strokeRect(x, y, w, h);
 
   if (title) {
-    ctx.fillStyle = "#4dabf7";
+    ctx.fillStyle = COLORS.accent;
     ctx.fillText(title, x + 10, y + 10);
   }
 }
 
-export function label(text, x, y, color = "#e6edf3") {
+export function label(text, x, y, color = COLORS.text) {
   ctx.fillStyle = color;
   ctx.fillText(text, x, y);
 }
 
-export function progressBar(x, y, w, h, value, color = "#4dabf7") {
-  ctx.fillStyle = "#222";
+export function progressBar(x, y, w, h, value) {
+  ctx.fillStyle = COLORS.panel;
   ctx.fillRect(x, y, w, h);
 
-  ctx.fillStyle = color;
+  ctx.fillStyle = COLORS.highlight;
   ctx.fillRect(x, y, w * value, h);
 
-  ctx.strokeStyle = "#4dabf7";
+  ctx.strokeStyle = COLORS.border;
   ctx.strokeRect(x, y, w, h);
 }
 

@@ -2,25 +2,31 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-function required(name, fallback = null) {
-  const value = process.env[name] ?? fallback;
-
-  if (value === undefined || value === null) {
-    throw new Error(`Missing required env variable: ${name}`);
-  }
-
+function required(name) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing env variable: ${name}`);
   return value;
+}
+
+function number(name, fallback) {
+  const val = Number(process.env[name]);
+  return Number.isFinite(val) ? val : fallback;
 }
 
 export const ENV = {
   HOST: process.env.HOST || "localhost",
-  PORT: Number(process.env.PORT) || 3000,
+  PORT: number("PORT", 3000),
   NODE_ENV: process.env.NODE_ENV || "development",
-  SESSION_SECRET: required(
-    "SESSION_SECRET",
-    process.env.NODE_ENV === "production" ? undefined : "dev-secret"
-  ),
-  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "admin123",
+
+  SESSION_SECRET:
+    process.env.NODE_ENV === "production"
+      ? required("SESSION_SECRET")
+      : process.env.SESSION_SECRET || "dev-secret",
+
+  ADMIN_PASSWORD:
+    process.env.NODE_ENV === "production"
+      ? required("ADMIN_PASSWORD")
+      : process.env.ADMIN_PASSWORD || "dev-admin",
 };
 
 export const isProd = ENV.NODE_ENV === "production";

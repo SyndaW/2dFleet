@@ -29,3 +29,21 @@ export async function travel(system) {
 export async function getPrices() {
   return handle(await fetch("/api/shop"));
 }
+
+export async function buy(item) {
+  return handle(
+    await fetch("/api/shop/buy", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ item })
+    })
+  );
+}
+
+export async function sell() {
+  return handle(await fetch("/api/shop/sell", { method: "POST" }));
+}
+
+export async function fuel() {
+  return handle(await fetch("/api/shop/fuel", { method: "POST" }));
+}

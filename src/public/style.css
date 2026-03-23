@@ -7,36 +7,24 @@
 }
 
 body {
-  margin: 0;
-  background: #0a0f1c;
-  color: #e6edf3;
+  background: #fdf6e3;
+  color: #586e75;
   font-family: monospace;
-  overflow: hidden;
-}
-
-canvas {
-  display: block;
 }
 
 #ui {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background: rgba(10, 15, 28, 0.8);
+  background: #eee8d5;
+  border: 1px solid #93a1a1;
   padding: 10px;
-  border: 1px solid #4dabf7;
 }
 
 button {
-  background: #16223b;
-  border: 1px solid #4dabf7;
-  color: #e6edf3;
-  padding: 6px 12px;
-  margin-right: 5px;
-  cursor: pointer;
-  transition: 0.2s;
+  background: #eee8d5;
+  border: 1px solid #93a1a1;
+  color: #586e75;
 }
 
 button:hover {
-  background: #4dabf7;
+  background: #93a1a1;
+  color: #fdf6e3;
 }
