@@ -1,6 +1,6 @@
 function api(url, options = {}) {
   return fetch(url, {
-    credentials: "include", // ✅ send session cookie
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),
@@ -11,22 +11,15 @@ function api(url, options = {}) {
 
 /**
  * Central response handler
- * - Handles 401 by restoring session
- * - Throws clean errors for UI
  */
 async function handle(res) {
-  // 🔥 SESSION LOST → auto-recover
+  // 🔥 SESSION LOST → auto-recover (FIXED)
   if (res.status === 401) {
-    try {
-      console.warn("Session expired. Restoring...");
+    console.warn("Session expired. Restoring...");
+    await startGame();
 
-      // Recreate / restore session
-      await startGame();
-
-      throw new Error("Session restored. Please retry.");
-    } catch (err) {
-      throw new Error("Session expired. Reloading game...");
-    }
+    // ✅ Do NOT throw → let caller retry gracefully
+    return { recovered: true };
   }
 
   const data = await res.json();
