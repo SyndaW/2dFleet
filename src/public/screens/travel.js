@@ -9,20 +9,24 @@ let completed = false;
 
 export async function renderTravel() {
   if (completed) return;
-  const current = STATE.universe[STATE.player.system];
 
+  const current = STATE.universe[STATE.player.system];
   if (!current) {
     STATE.ui.screen = "map";
     return;
   }
 
   if (!inProgress) {
+    // ✅ LOCK IMMEDIATELY (before await)
+    inProgress = true;
+
     const neighbor = current.neighbors.find(
       (n) => n.id === STATE.ui.destination,
     );
 
     if (!neighbor) {
       STATE.ui.screen = "map";
+      inProgress = false;
       return;
     }
 
@@ -31,13 +35,15 @@ export async function renderTravel() {
 
       duration = (result.travelTime || 5) * 1000;
       startTime = Date.now();
-      inProgress = true;
       completed = false;
 
       STATE._pendingTravelResult = result;
     } catch (err) {
       alert(err.message);
       STATE.ui.screen = "map";
+
+      // ✅ unlock on failure
+      inProgress = false;
       return;
     }
   }
@@ -62,6 +68,7 @@ export async function renderTravel() {
 
     const updated = STATE._pendingTravelResult;
 
+    // ✅ safer update
     STATE.player.fuel = updated.fuel;
     STATE.player.system = updated.system;
     STATE.player.location = updated.location;
@@ -71,6 +78,7 @@ export async function renderTravel() {
     STATE.ui.destination = null;
     STATE._pendingTravelResult = null;
 
+    // ✅ reset state
     inProgress = false;
     startTime = 0;
     duration = 0;
