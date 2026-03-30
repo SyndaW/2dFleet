@@ -4,8 +4,7 @@ import { consumeKey } from "../engine/input.js";
 import { panel, label } from "../engine/ui.js";
 
 export function renderSystem() {
-  const system =
-    STATE.universe[STATE.ui.selectedSystem || STATE.player.system];
+  const system = STATE.universe[STATE.ui.selectedSystem || STATE.player.system];
 
   if (!system) return; // ✅ FIX
 
