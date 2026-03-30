@@ -7,38 +7,35 @@ let index = 0;
 let initialized = false;
 
 function initSystems() {
-  if (!STATE.universe) return;
+  if (!STATE.universe || !STATE.player) return;
 
-  STATE.systems = Object.keys(STATE.universe).map((id) => ({
+  STATE.ui.systems = Object.keys(STATE.universe).map((id) => ({
     id,
     ...STATE.universe[id],
   }));
 
-  index = STATE.systems.findIndex((s) => s.id === STATE.player.system);
+  index = STATE.ui.systems.findIndex((s) => s.id === STATE.player.system);
 
   if (index === -1) index = 0;
 
-  STATE.selectedSystem = STATE.systems[index]?.id;
+  STATE.ui.selectedSystem = STATE.ui.systems[index]?.id;
 
   initialized = true;
 }
 
 export function renderMap() {
-  // Wait until universe is loaded
-  if (!STATE.universe) {
+  if (!STATE.universe || !STATE.player) {
     panel(40, 40, 300, 120, "Loading...");
     return;
   }
 
-  // Initialize once
   if (!initialized) {
     initSystems();
   }
 
-  const systems = STATE.systems;
+  const systems = STATE.ui.systems;
   if (!systems.length) return;
 
-  // INPUT (clean + predictable)
   if (consumeKey("ArrowRight")) {
     index = (index + 1) % systems.length;
   }
@@ -50,12 +47,11 @@ export function renderMap() {
   const selected = systems[index];
   if (!selected) return;
 
-  STATE.selectedSystem = selected.id;
+  STATE.ui.selectedSystem = selected.id;
 
   const current = STATE.universe[STATE.player.system];
   const neighbor = current?.neighbors?.find((n) => n.id === selected.id);
 
-  // UI PANEL
   panel(30, 30, 280, 170, "Galaxy Map");
 
   label("← → Select", 50, 70);
@@ -64,7 +60,6 @@ export function renderMap() {
 
   label(`Selected: ${selected.name}`, 50, 150, "#00ffcc");
 
-  // DISTANCE / STATUS
   if (neighbor) {
     label(`Distance: ${neighbor.distance} LY`, 50, 180);
 
@@ -81,7 +76,6 @@ export function renderMap() {
     label("Not connected", 50, 180, "#ff6b6b");
   }
 
-  // DRAW SYSTEMS
   systems.forEach((sys) => {
     ctx.fillStyle = "#ffaa00";
 
@@ -93,7 +87,6 @@ export function renderMap() {
     ctx.fillText(sys.name, sys.x - 20, sys.y + 20);
   });
 
-  // CURRENT SYSTEM
   if (current) {
     ctx.strokeStyle = "#4dabf7";
     ctx.lineWidth = 2;
@@ -103,7 +96,6 @@ export function renderMap() {
     ctx.stroke();
   }
 
-  // SELECTED SYSTEM
   ctx.strokeStyle = "#00ffcc";
   ctx.lineWidth = 3;
 
@@ -111,7 +103,6 @@ export function renderMap() {
   ctx.arc(selected.x, selected.y, 16, 0, Math.PI * 2);
   ctx.stroke();
 
-  // TRAVEL (safe)
   if (consumeKey("t") || consumeKey("T")) {
     if (!neighbor) return;
 

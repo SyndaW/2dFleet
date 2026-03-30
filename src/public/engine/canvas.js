@@ -1,6 +1,11 @@
 import { COLORS } from "./theme.js";
 
 export const canvas = document.getElementById("game");
+
+if (!canvas) {
+  throw new Error("Canvas #game not found");
+}
+
 export const ctx = canvas.getContext("2d");
 
 ctx.font = "18px monospace";

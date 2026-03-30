@@ -13,7 +13,7 @@ export function renderHUD() {
   const player = getPlayer();
   if (!player) return;
 
-  const ship = getShip();
+  const ship = getShip() || {};
 
   const width = canvas.width;
   const height = 70;

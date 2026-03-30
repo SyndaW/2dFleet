@@ -32,7 +32,7 @@ async function loadPrices() {
 
 function syncPlayer(data) {
   STATE.player.credits = data.credits;
-  STATE.cargo = data.cargo;
+  STATE.player.cargo = data.cargo;
   STATE.player.fuel = data.fuel;
 
   STATE.player.system = data.system;
@@ -63,7 +63,7 @@ export async function renderShop() {
 
     label(`${i + 1}. ${g}`, 60, y);
     label(`${prices[g]} cr`, 200, y, "#4dabf7");
-    label(`Cargo: ${STATE.cargo[g] || 0}`, 300, y);
+    label(`Cargo: ${STATE.player.cargo[g] || 0}`, 300, y);
   });
 
   const footerY = 120 + goods.length * 30 + 20;

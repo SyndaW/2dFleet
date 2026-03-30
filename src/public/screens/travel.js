@@ -10,7 +10,11 @@ let completed = false;
 export async function renderTravel() {
   const current = STATE.universe[STATE.player.system];
 
-  // INIT TRAVEL (once)
+  if (!current) {
+    STATE.ui.screen = "map";
+    return;
+  }
+
   if (!inProgress) {
     const neighbor = current.neighbors.find(
       (n) => n.id === STATE.ui.destination,
@@ -24,12 +28,11 @@ export async function renderTravel() {
     try {
       const result = await travel(STATE.ui.destination);
 
-      duration = (result.travelTime || 5) * 1000; // ms
+      duration = (result.travelTime || 5) * 1000;
       startTime = Date.now();
       inProgress = true;
       completed = false;
 
-      // Pre-store result for later
       STATE._pendingTravelResult = result;
     } catch (err) {
       alert(err.message);
@@ -38,7 +41,6 @@ export async function renderTravel() {
     }
   }
 
-  // PROGRESS CALC
   const elapsed = Date.now() - startTime;
   const progress = Math.min(1, elapsed / duration);
 
@@ -54,20 +56,17 @@ export async function renderTravel() {
 
   progressBar(60, 160, 350, 18, progress);
 
-  // COMPLETE (once)
   if (progress >= 1 && !completed) {
     completed = true;
 
     const updated = STATE._pendingTravelResult;
 
-    // FULL SYNC
     STATE.player.fuel = updated.fuel;
     STATE.player.system = updated.system;
     STATE.player.location = updated.location;
 
-    STATE.selectedSystem = updated.system;
+    STATE.ui.selectedSystem = updated.system;
 
-    // RESET
     STATE.ui.destination = null;
     STATE._pendingTravelResult = null;
 

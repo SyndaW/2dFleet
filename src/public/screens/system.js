@@ -4,7 +4,10 @@ import { consumeKey } from "../engine/input.js";
 import { panel, label } from "../engine/ui.js";
 
 export function renderSystem() {
-  const system = STATE.universe[STATE.selectedSystem || STATE.player.system];
+  const system =
+    STATE.universe[STATE.ui.selectedSystem || STATE.player.system];
+
+  if (!system) return; // ✅ FIX
 
   panel(30, 30, 260, 120, "System");
 
@@ -43,19 +46,19 @@ export function renderSystem() {
   });
 
   if (consumeKey("d")) {
-    const systemId = STATE.selectedSystem || STATE.player.system;
+    const systemId = STATE.ui.selectedSystem || STATE.player.system;
 
     STATE.player.system = systemId;
-    STATE.selectedSystem = systemId;
+    STATE.ui.selectedSystem = systemId;
 
     STATE.player.x = 100;
     STATE.player.y = 300;
     STATE.player.vx = 0;
     STATE.player.vy = 0;
 
-    STATE.docking.targetX = 600;
-    STATE.docking.targetY = 300;
-    STATE.docking.startTime = Date.now();
+    STATE.ui.docking.targetX = 600;
+    STATE.ui.docking.targetY = 300;
+    STATE.ui.docking.startTime = Date.now();
 
     STATE.ui.screen = "landing";
   }

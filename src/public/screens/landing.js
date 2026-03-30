@@ -11,12 +11,17 @@ function resetDocking() {
   p.vx = 0;
   p.vy = 0;
 
-  STATE.docking.startTime = 0;
+  STATE.ui.docking.startTime = 0;
 }
 
 export function renderLanding() {
+  if (p.x == null) p.x = 100;
+  if (p.y == null) p.y = 300;
+  if (p.vx == null) p.vx = 0;
+  if (p.vy == null) p.vy = 0;
+
   const p = STATE.player;
-  const dock = STATE.docking;
+  const dock = STATE.ui.docking;
 
   if (!dock.startTime) {
     dock.startTime = Date.now();
@@ -77,7 +82,7 @@ export function renderLanding() {
       STATE.player.location = system.stations[0].id;
     }
 
-    STATE.selectedSystem = systemId;
+    STATE.ui.selectedSystem = systemId;
 
     setTimeout(() => {
       resetDocking();
@@ -86,6 +91,4 @@ export function renderLanding() {
 
     return;
   }
-
-  // ❌ REMOVED forced kickout on high speed
 }

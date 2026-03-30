@@ -132,4 +132,8 @@ function renderError() {
  * ▶ START
  * ========================= */
 
-init().then(loop);
+init()
+  .then(() => loop())
+  .catch((err) => {
+    console.error("Fatal init error:", err);
+  });
