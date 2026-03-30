@@ -8,6 +8,7 @@ let inProgress = false;
 let completed = false;
 
 export async function renderTravel() {
+  if (completed) return;
   const current = STATE.universe[STATE.player.system];
 
   if (!current) {

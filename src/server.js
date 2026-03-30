@@ -23,7 +23,7 @@ app.use(
     saveUninitialized: false,
 
     cookie: {
-      secure: false, // ✅ ALWAYS false in local dev (IMPORTANT)
+      secure: isProd, // ✅ FIXED
       httpOnly: true,
       sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24,

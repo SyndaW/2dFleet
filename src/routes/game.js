@@ -10,7 +10,6 @@ const router = express.Router();
 router.get("/start", (req, res) => {
   if (!req.session.player) {
     const saved = loadPlayer(req.sessionID);
-
     req.session.player = saved || createPlayer();
   }
 
@@ -31,21 +30,30 @@ router.get("/universe", async (req, res) => {
 router.post("/travel", requirePlayer, async (req, res) => {
   const { system } = req.body;
 
+  // ✅ FIX: validation INSIDE route
+  if (typeof system !== "string") {
+    return res.status(400).json({ error: "Invalid system" });
+  }
+
   const player = req.session.player;
   const universe = await getUniverse();
 
   const current = universe[player.system];
   const neighbor = current.neighbors.find((n) => n.id === system);
 
-  if (!neighbor) return res.status(400).json({ error: "System unreachable" });
+  if (!neighbor) {
+    return res.status(400).json({ error: "System unreachable" });
+  }
 
-  if (neighbor.distance > player.ship.jumpRange)
+  if (neighbor.distance > player.ship.jumpRange) {
     return res.status(400).json({ error: "Out of range" });
+  }
 
   const fuelCost = neighbor.distance * 10;
 
-  if (player.fuel < fuelCost)
+  if (player.fuel < fuelCost) {
     return res.status(400).json({ error: "Not enough fuel" });
+  }
 
   player.fuel -= fuelCost;
   player.system = system;
@@ -58,7 +66,12 @@ router.post("/travel", requirePlayer, async (req, res) => {
 
   savePlayer(req.sessionID, player);
 
-  res.json({ ...player, travelTime });
+  res.json({
+    system: player.system,
+    location: player.location,
+    fuel: player.fuel,
+    travelTime,
+  });
 });
 
 export default router;

@@ -4,23 +4,33 @@ import { keys } from "../engine/input.js";
 
 let finished = false;
 
+function getMotion() {
+  if (!STATE.runtime.shipMotion) {
+    STATE.runtime.shipMotion = {
+      x: 100,
+      y: 300,
+      vx: 0,
+      vy: 0,
+    };
+  }
+  return STATE.runtime.shipMotion;
+}
+
 function resetDocking() {
   finished = false;
 
-  const p = STATE.player;
-  p.vx = 0;
-  p.vy = 0;
+  STATE.runtime.shipMotion = {
+    x: 100,
+    y: 300,
+    vx: 0,
+    vy: 0,
+  };
 
   STATE.ui.docking.startTime = 0;
 }
 
 export function renderLanding() {
-  if (p.x == null) p.x = 100;
-  if (p.y == null) p.y = 300;
-  if (p.vx == null) p.vx = 0;
-  if (p.vy == null) p.vy = 0;
-
-  const p = STATE.player;
+  const motion = getMotion();
   const dock = STATE.ui.docking;
 
   if (!dock.startTime) {
@@ -29,22 +39,24 @@ export function renderLanding() {
 
   if (finished) return;
 
-  if (keys["ArrowUp"]) p.vy -= 0.1;
-  if (keys["ArrowDown"]) p.vy += 0.1;
-  if (keys["ArrowLeft"]) p.vx -= 0.1;
-  if (keys["ArrowRight"]) p.vx += 0.1;
+  // controls
+  if (keys["ArrowUp"]) motion.vy -= 0.1;
+  if (keys["ArrowDown"]) motion.vy += 0.1;
+  if (keys["ArrowLeft"]) motion.vx -= 0.1;
+  if (keys["ArrowRight"]) motion.vx += 0.1;
 
-  p.x += p.vx;
-  p.y += p.vy;
+  motion.x += motion.vx;
+  motion.y += motion.vy;
 
-  // ✅ stronger damping (fix runaway speed)
-  p.vx *= 0.92;
-  p.vy *= 0.92;
+  // damping
+  motion.vx *= 0.92;
+  motion.vy *= 0.92;
 
-  // ✅ hard clamp
-  p.vx = Math.max(-2, Math.min(2, p.vx));
-  p.vy = Math.max(-2, Math.min(2, p.vy));
+  // clamp
+  motion.vx = Math.max(-2, Math.min(2, motion.vx));
+  motion.vy = Math.max(-2, Math.min(2, motion.vy));
 
+  // render
   ctx.fillStyle = "#fff";
   ctx.fillText("Dock With Station", 50, 60);
 
@@ -52,14 +64,13 @@ export function renderLanding() {
   ctx.strokeRect(dock.targetX - 20, dock.targetY - 10, 120, 70);
 
   ctx.fillStyle = "#4dabf7";
-  ctx.fillRect(p.x, p.y, 20, 10);
+  ctx.fillRect(motion.x, motion.y, 20, 10);
 
-  const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-
+  const speed = Math.sqrt(motion.vx ** 2 + motion.vy ** 2);
   ctx.fillText("Speed: " + speed.toFixed(2), 50, 100);
 
-  const dx = p.x - dock.targetX;
-  const dy = p.y - dock.targetY;
+  const dx = motion.x - dock.targetX;
+  const dy = motion.y - dock.targetY;
 
   const aligned = Math.abs(dx) < 30 && Math.abs(dy) < 25;
   const slow = speed < 0.6;
@@ -88,7 +99,5 @@ export function renderLanding() {
       resetDocking();
       STATE.ui.screen = "shop";
     }, 300);
-
-    return;
   }
 }

@@ -2,6 +2,7 @@ import { STATE } from "../engine/state.js";
 import { consumeKey } from "../engine/input.js";
 import { getPrices, buy, sell, fuel } from "../api.js";
 import { panel, label } from "../engine/ui.js";
+import { setPlayer } from "../engine/state.js";
 
 let prices = null;
 let loading = false;
@@ -31,12 +32,7 @@ async function loadPrices() {
 }
 
 function syncPlayer(data) {
-  STATE.player.credits = data.credits;
-  STATE.player.cargo = data.cargo;
-  STATE.player.fuel = data.fuel;
-
-  STATE.player.system = data.system;
-  STATE.player.location = data.location;
+  setPlayer(data);
 }
 
 export async function renderShop() {
