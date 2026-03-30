@@ -48,7 +48,8 @@ export async function travel(system) {
     await api("/api/game/travel", {
       method: "POST",
       body: JSON.stringify({ system }),
-    }), "/api/game/travel"
+    }),
+    "/api/game/travel",
   );
 }
 
@@ -65,14 +66,21 @@ export async function buy(item) {
     await api("/api/shop/buy", {
       method: "POST",
       body: JSON.stringify({ item }),
-    }), "/api/shop/buy"
+    }),
+    "/api/shop/buy",
   );
 }
 
 export async function sell() {
-  return handle(await api("/api/shop/sell", { method: "POST" }), "/api/shop/sell");
+  return handle(
+    await api("/api/shop/sell", { method: "POST" }),
+    "/api/shop/sell",
+  );
 }
 
 export async function fuel() {
-  return handle(await api("/api/shop/fuel", { method: "POST" }), "/api/shop/fuel");
+  return handle(
+    await api("/api/shop/fuel", { method: "POST" }),
+    "/api/shop/fuel",
+  );
 }
